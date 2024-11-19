@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:travel/api_service.dart';
 import 'dart:convert';
 import 'login_page.dart';
 
@@ -18,6 +19,14 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController _passwordController = TextEditingController();
   bool _isAgreed = false;
 
+  ApiService? _apiService;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiService = new ApiService();
+  }
+
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       String username = _usernameController.text;
@@ -34,7 +43,7 @@ class _SignupPageState extends State<SignupPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://172.20.10.4:8000/api/signup'),
+          Uri.parse('http://192.168.0.100/api/users/register'),
           headers: <String, String>{
             'Content-Type': 'application/json',
           },
@@ -70,8 +79,7 @@ class _SignupPageState extends State<SignupPage> {
         children: [
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.07),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -99,7 +107,6 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _usernameController,
                         decoration: InputDecoration(
@@ -118,7 +125,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
@@ -137,7 +143,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -159,7 +164,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -182,7 +186,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       Row(
                         children: [
                           Checkbox(
@@ -205,7 +208,6 @@ class _SignupPageState extends State<SignupPage> {
                         ],
                       ),
                       SizedBox(height: screenHeight * 0.04),
-
                       Center(
                         child: ElevatedButton(
                           onPressed: _submitForm,
@@ -229,7 +231,6 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       Center(
                         child: GestureDetector(
                           onTap: () {
@@ -266,7 +267,6 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
           ),
-
           Container(
             color: const Color(0xFF238688),
             padding: const EdgeInsets.all(12),
