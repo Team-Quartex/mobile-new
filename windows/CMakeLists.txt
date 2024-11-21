@@ -1,10 +1,18 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+<<<<<<< HEAD
 project(trova LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "trova")
+=======
+project(travel LANGUAGES CXX)
+
+# The name of the executable created for the application. Change this to change
+# the on-disk name of your application.
+set(BINARY_NAME "travel")
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

@@ -28,4 +28,19 @@ class Post {
       comments: json['comments'],
     );
   }
+<<<<<<< HEAD
+=======
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userName': userName,
+      'userProfileImage': userProfileImage,
+      'postContent': postContent,
+      'postImage': postImage,
+      'postDate': postDate,
+      'likes': likes,
+      'comments': comments,
+    };
+  }
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -122,3 +123,23 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
+=======
+
+class Searchpage extends StatefulWidget {
+  const Searchpage({super.key});
+
+  @override
+  State<Searchpage> createState() => _SearchpageState();
+}
+
+class _SearchpageState extends State<Searchpage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: Text("This is search page"),
+      ),
+    );
+  }
+}
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4

@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "trova",
     "short_name": "trova",
+=======
+    "name": "travel",
+    "short_name": "travel",
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

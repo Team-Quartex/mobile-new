@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
         android:label="trova"
+=======
+        android:label="travel"
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

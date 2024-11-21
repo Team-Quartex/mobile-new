@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 # trova
 
 A new Flutter project.
 
+=======
+# travel
+
+A new Flutter project.
+ 
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 ## Getting Started
 
 This project is a starting point for a Flutter application.

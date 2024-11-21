@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../Screens/home/HomeContent/HomeContent.dart';
+=======
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 import 'Signup_Page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,9 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+<<<<<<< HEAD
   bool _obscureText = true;
   String? _errorMessage;
   bool _showError = false;
+=======
+  String? _errorMessage;
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 
   Future<void> _login() async {
     String username = _usernameController.text.trim();
@@ -25,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() {
       _errorMessage = null;
+<<<<<<< HEAD
       _showError = false;
     });
 
@@ -32,6 +40,20 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _errorMessage = 'Please fill in all fields.';
         _showError = true;
+=======
+    });
+
+    if (username.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter your username.';
+      });
+      return;
+    }
+
+    if (password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter your password.';
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
       });
       return;
     }
@@ -41,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
+<<<<<<< HEAD
       final response = await http.post(
         Uri.parse('http://localhost:8000/api/users/login'),
         headers: {'Content-Type': 'application/json'},
@@ -62,11 +85,30 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _errorMessage = 'Failed to connect to the server.';
         _showError = true;
+=======
+      await Future.delayed(Duration(seconds: 2));
+
+      if (username != 'testuser' || password != 'password123') {
+        setState(() {
+          _errorMessage = 'Invalid username or password.';
+        });
+      } else {
+
+        setState(() {
+          _errorMessage = null;
+        });
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (error) {
+      setState(() {
+        _errorMessage = 'An error occurred. Please try again later.';
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
       });
     } finally {
       setState(() {
         _isLoading = false;
       });
+<<<<<<< HEAD
 
       Future.delayed(const Duration(seconds: 3), () {
         if (_showError) {
@@ -75,6 +117,8 @@ class _LoginPageState extends State<LoginPage> {
           });
         }
       });
+=======
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
     }
   }
 
@@ -93,6 +137,10 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+<<<<<<< HEAD
+=======
+
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                   Row(
                     children: [
                       Image.asset(
@@ -103,6 +151,10 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                   SizedBox(height: screenHeight * 0.03),
+<<<<<<< HEAD
+=======
+
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                   Text(
                     "Welcome,",
                     style: TextStyle(
@@ -113,6 +165,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: screenHeight * 0.05),
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                   TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
@@ -126,9 +182,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: screenHeight * 0.02),
 
+<<<<<<< HEAD
                   TextField(
                     controller: _passwordController,
                     obscureText: _obscureText,
+=======
+
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                     style: const TextStyle(color: Color(0xFF238688)),
                     decoration: InputDecoration(
                       labelText: "Password",
@@ -136,6 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: screenWidth * 0.04,
                           color: const Color(0xFF238688)),
                       border: const UnderlineInputBorder(),
+<<<<<<< HEAD
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscureText
@@ -148,6 +212,9 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         },
                       ),
+=======
+                      suffixIcon: const Icon(Icons.visibility_off),
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01),
@@ -168,6 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: screenHeight * 0.05),
 
+<<<<<<< HEAD
                   if (_isLoading)
                     Center(
                       child: CircularProgressIndicator(
@@ -178,6 +246,21 @@ class _LoginPageState extends State<LoginPage> {
                   AnimatedOpacity(
                     opacity: _showError ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 500),
+=======
+
+                  if (_isLoading)
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF238688),
+                      ),
+                    ),
+                  SizedBox(height: _isLoading ? screenHeight * 0.02 : 0),
+
+
+                  AnimatedOpacity(
+                    opacity: _errorMessage != null ? 1.0 : 0.0,
+                    duration: Duration(milliseconds: 500),
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
@@ -187,6 +270,10 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                             color: Colors.red,
                             fontSize: screenWidth * 0.04,
+<<<<<<< HEAD
+=======
+                            fontWeight: FontWeight.normal,
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                           ),
                         ),
                       ),
@@ -202,9 +289,14 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(32),
                         ),
                         padding: EdgeInsets.symmetric(
+<<<<<<< HEAD
                           horizontal: screenWidth * 0.2,
                           vertical: screenHeight * 0.02,
                         ),
+=======
+                            horizontal: screenWidth * 0.2,
+                            vertical: screenHeight * 0.02),
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                       ),
                       child: Text(
                         "Login",

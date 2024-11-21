@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:trova/model/post_model.dart';
+=======
+import '../../../model/post_model.dart';
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 import 'Comment.dart';
 import 'Like.dart';
 import 'Cart.dart';
@@ -15,6 +19,7 @@ class HomeContent extends StatefulWidget {
 
 class _LandingpageState extends State<HomeContent> {
   Future<List<Post>> fetchPosts() async {
+<<<<<<< HEAD
     try {
       final response = await http.get(Uri.parse('http://localhost:8000/api/posts/getall'));
 
@@ -28,6 +33,29 @@ class _LandingpageState extends State<HomeContent> {
       print('Error: $e');
       throw Exception('Failed to load posts: $e');
     }
+=======
+    await Future.delayed(Duration(seconds: 2));
+    return [
+      Post(
+        userName: 'John Doe',
+        userProfileImage: 'assets/profile.jpg',
+        postContent: 'Hi, Everyone! Today I\'m in the world\'s most beautiful island @SriLanka',
+        postImage: 'assets/pic1.jpg',
+        postDate: '1 day ago',
+        likes: 4200,
+        comments: 3500,
+      ),
+      Post(
+        userName: 'Jane Doe',
+        userProfileImage: 'assets/profile.jpg',
+        postContent: 'Exploring the amazing lighthouse in Sri Lanka! #SriLanka #travel',
+        postImage: 'assets/pic1.jpg',
+        postDate: '2 days ago',
+        likes: 2800,
+        comments: 1900,
+      ),
+    ];
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
   }
 
   @override
@@ -137,7 +165,15 @@ class _LandingpageState extends State<HomeContent> {
                                 ),
                                 child: Text(
                                   'Follow',
+<<<<<<< HEAD
                                   style: TextStyle(color: Colors.white),
+=======
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                                 ),
                               ),
                             ],
@@ -202,6 +238,54 @@ class _LandingpageState extends State<HomeContent> {
               ],
             ),
           ),
+<<<<<<< HEAD
+=======
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage('assets/profile.jpg'),
+                  ),
+                  SizedBox(width: 10),
+
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Type a comment...',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                    ),
+                  ),
+
+
+                  Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.send, color: Colors.white, size: 18),
+                      onPressed: () {
+
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+>>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
         ],
       ),
     );
