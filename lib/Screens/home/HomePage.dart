@@ -16,11 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     HomeContent(),
-<<<<<<< HEAD
     SearchPage(),
-=======
-    Searchpage(),
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
     MarketPage(),
     Profilepage()
   ];

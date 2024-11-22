@@ -2,29 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:trova/class/product_class.dart';
+
 class MarketPage extends StatelessWidget {
-<<<<<<< HEAD
-  final String apiUrl = 'https://172.20.10.4:8000/api/products';
-=======
-  final String apiUrl = 'https://example.com/api/items';
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
-
-  Future<List<Item>> fetchItems() async {
-    final response = await http.get(Uri.parse(apiUrl));
-
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((item) => Item.fromJson(item)).toList();
-    } else {
-      throw Exception('Failed to load items');
-    }
-  }
+  ProductClass _productClass = ProductClass();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Market place', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
+        title: Text('Market place',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
         centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -86,18 +74,6 @@ class MarketPage extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-<<<<<<< HEAD
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                  CategoryChip(imagePath: 'assets/icons/camera.png'),
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                ],
-              ),
-            ),
-
-
-=======
                   CategoryChip(label: 'Tent', icon: Icons.outdoor_grill),
                   CategoryChip(label: 'Camera', icon: Icons.camera_alt),
                   CategoryChip(label: 'Binoculars', icon: Icons.visibility),
@@ -105,11 +81,10 @@ class MarketPage extends StatelessWidget {
                 ],
               ),
             ),
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
             SizedBox(height: 16.0),
             Expanded(
-              child: FutureBuilder<List<Item>>(
-                future: fetchItems(),
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _productClass.getProducts(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
@@ -126,20 +101,16 @@ class MarketPage extends StatelessWidget {
                   var items = snapshot.data!;
 
                   return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
+                      childAspectRatio: (1 / 1.55),
                     ),
                     itemCount: items.length,
                     itemBuilder: (context, index) {
                       var item = items[index];
-                      return ItemCard(
-                        imageUrl: item.imageUrl,
-                        name: item.name,
-                        price: item.price,
-                        category: item.category,
-                      );
+                      return ItemCard(product: item);
                     },
                   );
                 },
@@ -152,50 +123,16 @@ class MarketPage extends StatelessWidget {
   }
 }
 
-<<<<<<< HEAD
-
-
-class CategoryChip extends StatelessWidget {
-  final String imagePath;
-
-  CategoryChip({required this.imagePath});
-=======
 class CategoryChip extends StatelessWidget {
   final String label;
   final IconData icon;
 
   CategoryChip({required this.label, required this.icon});
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
-<<<<<<< HEAD
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 2,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Image.asset(
-            imagePath,
-            width: 50,
-            height: 50,
-            fit: BoxFit.contain,
-          ),
-        ),
-=======
       child: Chip(
         label: Row(
           children: [
@@ -205,29 +142,18 @@ class CategoryChip extends StatelessWidget {
           ],
         ),
         backgroundColor: Colors.grey[200],
-        padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0), // Increased height
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
+        padding: EdgeInsets.symmetric(
+            vertical: 12.0, horizontal: 20.0), // Increased height
       ),
     );
   }
 }
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 class ItemCard extends StatelessWidget {
-  final String imageUrl;
-  final String name;
-  final double price;
-  final String category;
+  final Map<String, dynamic> product;
 
   ItemCard({
-    required this.imageUrl,
-    required this.name,
-    required this.price,
-    required this.category,
+    required this.product,
   });
 
   @override
@@ -243,22 +169,22 @@ class ItemCard extends StatelessWidget {
               topLeft: Radius.circular(8),
               topRight: Radius.circular(8),
             ),
-            child: Image.network(imageUrl, height: 120, fit: BoxFit.cover),
+            child: Image.network('http://192.168.0.102/uploads/${product['images'][0]}',
+                height: 120, fit: BoxFit.cover),
           ),
-<<<<<<< HEAD
-=======
           // Item Details
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(product['name'], style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 4.0),
-                Text('LKR ${price.toStringAsFixed(2)}', style: TextStyle(fontSize: 14)),
+                Text('LKR ${product['price'].toString()}',
+                    style: TextStyle(fontSize: 14)),
                 SizedBox(height: 4.0),
-                Text(category, style: TextStyle(fontSize: 12, color: Colors.grey)),
+                Text("Hello",
+                    style: TextStyle(fontSize: 12, color: Colors.grey)),
               ],
             ),
           ),
@@ -270,7 +196,8 @@ class ItemCard extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 padding: EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
               child: Text('For Rent', style: TextStyle(fontSize: 14)),
             ),

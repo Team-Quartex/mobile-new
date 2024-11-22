@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:get_it/get_it.dart';
+import 'package:trova/class/search_class.dart';
+import 'package:trova/class/user_class.dart';
+import 'package:trova/widget/post_card.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -10,39 +11,86 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController _searchController = TextEditingController();
-  List<String> imageLinks = [];
-  bool isLoading = true;
+
+  // List of predefined words for search
+  List<Map<String, dynamic>>? wordList;
+
+  List<Map<String, dynamic>> filteredWords = [];
+  List<Map<String, dynamic>> suggestions = [];
+  bool showBanner = false;
+  SearchClass _searchClass = SearchClass();
+  int? userId;
+  String? profilePic;
+  UserClass? _userClass;
 
   @override
   void initState() {
     super.initState();
-    _fetchImages();
+    _fetchSuggestions();
+    _fetchSearchres("");
+    _fetchUserDeails();
   }
 
-  Future<void> _fetchImages() async {
-    final response = await http.get(Uri.parse('https://172.20.10.4:8000/getImages'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-
-      setState(() {
-        imageLinks = data.map((imageData) => imageData['imageLink'] as String).toList();
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      throw Exception('Failed to load images');
+  Future<void> _fetchSuggestions() async {
+    wordList = await _searchClass.searchSuggetions();
+    if (wordList != null) {
+      setState(() {});
     }
+  }
+
+  Future<void> _fetchSearchres(String query) async {
+    filteredWords = await _searchClass.filterSearch(query);
+    setState(() {
+    });
+  }
+
+  Future<void> _fetchUserDeails() async {
+    _userClass = GetIt.instance.get<UserClass>();
+    _userClass!.fetchUser();
+    userId = _userClass!.userid;
+    profilePic = _userClass!.profilepic;
+    print(userId);
   }
 
   void _onSearchChanged(String query) {
     setState(() {
-      imageLinks = imageLinks
-          .where((imageLink) => imageLink.contains(query))
-          .toList();
+      // Show banner for a single character
+      if (query.length == 1) {
+        showBanner = true;
+      } else {
+        showBanner = false;
+      }
+
+      // If query is empty, clear suggestions
+      if (query.isEmpty) {
+        suggestions.clear();
+        _fetchSearchres('');
+      } else {
+        // Filter words for suggestions (up to 4 matches)
+        suggestions = wordList!
+            .where((word) => word['name']
+                .toString()
+                .toLowerCase()
+                .contains(query.toLowerCase()))
+            .take(4)
+            .toList();
+
+        // Filter words for the main display
+        // filteredWords = wordList!
+        //     .where((word) => word['name']
+        //         .toString()
+        //         .toLowerCase()
+        //         .contains(query.toLowerCase()))
+        //     .toList();
+      }
     });
+  }
+
+  void _onSuggestionSelected(Map<String, dynamic> suggestion) {
+    _searchController.text = suggestion['name'];
+    _onSearchChanged(suggestion['name']);
+    _fetchSearchres(suggestion['name']);
+    suggestions.clear(); // Hide suggestions after selection
   }
 
   @override
@@ -57,64 +105,86 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    blurRadius: 8.0,
-                    spreadRadius: 2.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: TextField(
-                controller: _searchController,
-                onChanged: _onSearchChanged,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, color: Colors.black),
-                  hintText: 'Search here...',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                  border: OutlineInputBorder(
+            child: Column(
+              children: [
+                // Search Bar
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
-                    borderSide: BorderSide.none,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 8.0,
+                        spreadRadius: 2.0,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    borderSide: BorderSide.none,
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search, color: Colors.black),
+                      hintText: 'Search here...',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    style: TextStyle(color: Colors.black),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
                 ),
-                style: TextStyle(color: Colors.black),
-              ),
+                // Suggestions Box
+                if (suggestions.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 5.0,
+                          spreadRadius: 1.0,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: suggestions.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(
+                            suggestions[index]['name'],
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 126, 44, 44)),
+                          ),
+                          onTap: () {
+                            _onSuggestionSelected(suggestions[index]);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+              ],
             ),
           ),
-          isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ),
-              itemCount: imageLinks.length,
+          // Main Display
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredWords.length,
               itemBuilder: (context, index) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: Image.network(
-                    imageLinks[index],
-                    fit: BoxFit.cover,
-                  ),
-                );
+                return PostCard(
+                    post: filteredWords[index],
+                    userId: userId!,
+                    profilePic: profilePic!);
               },
             ),
           ),
@@ -123,23 +193,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-=======
-
-class Searchpage extends StatefulWidget {
-  const Searchpage({super.key});
-
-  @override
-  State<Searchpage> createState() => _SearchpageState();
-}
-
-class _SearchpageState extends State<Searchpage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("This is search page"),
-      ),
-    );
-  }
-}
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4

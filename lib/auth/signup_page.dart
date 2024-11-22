@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:trova/api_service.dart';
 import 'dart:convert';
 import 'login_page.dart';
 
@@ -17,6 +19,13 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool _isAgreed = false;
+  ApiService? _apiService;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiService = GetIt.instance.get<ApiService>();
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -70,8 +79,7 @@ class _SignupPageState extends State<SignupPage> {
         children: [
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.07),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -99,7 +107,6 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _usernameController,
                         decoration: InputDecoration(
@@ -118,7 +125,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
@@ -137,7 +143,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -159,7 +164,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -182,7 +186,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       Row(
                         children: [
                           Checkbox(
@@ -205,10 +208,9 @@ class _SignupPageState extends State<SignupPage> {
                         ],
                       ),
                       SizedBox(height: screenHeight * 0.04),
-
                       Center(
                         child: ElevatedButton(
-                          onPressed: _submitForm,
+                          onPressed: _register,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF238688),
                             shape: RoundedRectangleBorder(
@@ -229,7 +231,6 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       Center(
                         child: GestureDetector(
                           onTap: () {
@@ -266,7 +267,6 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
           ),
-
           Container(
             color: const Color(0xFF238688),
             padding: const EdgeInsets.all(12),
@@ -283,5 +283,16 @@ class _SignupPageState extends State<SignupPage> {
         ],
       ),
     );
+  }
+
+  void _register() async{
+    if (_formKey.currentState?.validate() ?? false){
+      if(await  _apiService!.userRegister(_usernameController.text, _nameController.text, _emailController.text, _passwordController.text)){
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+      }
+    }
   }
 }

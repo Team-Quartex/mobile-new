@@ -28,8 +28,6 @@ class Post {
       comments: json['comments'],
     );
   }
-<<<<<<< HEAD
-=======
 
   Map<String, dynamic> toJson() {
     return {
@@ -42,5 +40,4 @@ class Post {
       'comments': comments,
     };
   }
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 }
