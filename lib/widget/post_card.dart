@@ -6,6 +6,7 @@ import 'package:trova/api_service.dart';
 import 'package:trova/class/post_class.dart';
 import 'package:trova/class/user_class.dart';
 import 'package:trova/widget/post_description.dart';
+import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class PostCard extends StatefulWidget {
   final Map<dynamic, dynamic> post;
@@ -148,12 +149,14 @@ class _PostCardState extends State<PostCard> {
                           padEnds: false,
                           itemCount: widget.post['images'].length,
                           itemBuilder: (context, index) {
-                            return Image.network(
+                            return ZoomOverlay(
+                              modalBarrierColor: Colors.black12,
+                                child: Image.network(
                               "http://192.168.0.102:8000/uploads/${widget.post['images'][index]}",
                               errorBuilder: (context, error, stackTrace) {
                                 return Icon(Icons.error);
                               },
-                            );
+                            ));
                           },
                         ),
                       ),
