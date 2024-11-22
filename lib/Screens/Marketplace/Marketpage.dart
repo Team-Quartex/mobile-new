@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:trova/Screens/Marketplace/product_view.dart';
 import 'dart:convert';
 
 import 'package:trova/class/product_class.dart';
@@ -101,7 +102,8 @@ class MarketPage extends StatelessWidget {
                   var items = snapshot.data!;
 
                   return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
@@ -158,51 +160,60 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(8),
-            ),
-            child: Image.network('http://192.168.0.102/uploads/${product['images'][0]}',
-                height: 120, fit: BoxFit.cover),
-          ),
-          // Item Details
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(product['name'], style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 4.0),
-                Text('LKR ${product['price'].toString()}',
-                    style: TextStyle(fontSize: 14)),
-                SizedBox(height: 4.0),
-                Text("Hello",
-                    style: TextStyle(fontSize: 12, color: Colors.grey)),
-              ],
-            ),
-          ),
-          // Rent Button
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProductView(itemDetails: product)));
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        elevation: 4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
               ),
-              child: Text('For Rent', style: TextStyle(fontSize: 14)),
+              child: Image.network(
+                  'http://192.168.0.100/uploads/${product['images'][0]}',
+                  height: 120,
+                  fit: BoxFit.cover),
             ),
-          ),
-        ],
+            // Item Details
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(product['name'],
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(height: 4.0),
+                  Text('LKR ${product['price'].toString()}',
+                      style: TextStyle(fontSize: 14)),
+                  SizedBox(height: 4.0),
+                  Text("Hello",
+                      style: TextStyle(fontSize: 12, color: Colors.grey)),
+                ],
+              ),
+            ),
+            // Rent Button
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Text('For Rent', style: TextStyle(fontSize: 14)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
