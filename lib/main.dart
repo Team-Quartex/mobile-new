@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Trova",
       theme: AppTheme.theme,
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

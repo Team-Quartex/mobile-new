@@ -6,18 +6,20 @@ import 'dart:convert';
 import 'package:trova/class/product_class.dart';
 
 class MarketPage extends StatelessWidget {
-  ProductClass _productClass = ProductClass();
+  final ProductClass _productClass = ProductClass();
+
+  MarketPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Market place',
+        title: const Text('Market place',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
         centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         toolbarHeight: 80,
         // leading: IconButton(
         //   //icon: Icon(Icons.store_mall_directory_sharp, color: Colors.black,size: 35,),
@@ -42,16 +44,17 @@ class MarketPage extends StatelessWidget {
                       color: Colors.black.withOpacity(0.2),
                       blurRadius: 12,
                       spreadRadius: 2,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search, color: Colors.black),
+                    prefixIcon: const Icon(Icons.search, color: Colors.black),
                     hintText: 'Search here...',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide.none,
@@ -67,7 +70,7 @@ class MarketPage extends StatelessWidget {
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                 ),
               ),
             ),
@@ -82,13 +85,13 @@ class MarketPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Expanded(
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: _productClass.getProducts(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   if (snapshot.hasError) {
@@ -96,7 +99,7 @@ class MarketPage extends StatelessWidget {
                   }
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No items available.'));
+                    return const Center(child: Text('No items available.'));
                   }
 
                   var items = snapshot.data!;
@@ -129,7 +132,7 @@ class CategoryChip extends StatelessWidget {
   final String label;
   final IconData icon;
 
-  CategoryChip({required this.label, required this.icon});
+  const CategoryChip({super.key, required this.label, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +142,12 @@ class CategoryChip extends StatelessWidget {
         label: Row(
           children: [
             Icon(icon, size: 20),
-            SizedBox(width: 8),
-            Text(label, style: TextStyle(fontSize: 14)),
+            const SizedBox(width: 8),
+            Text(label, style: const TextStyle(fontSize: 14)),
           ],
         ),
         backgroundColor: Colors.grey[200],
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
             vertical: 12.0, horizontal: 20.0), // Increased height
       ),
     );
@@ -154,7 +157,8 @@ class CategoryChip extends StatelessWidget {
 class ItemCard extends StatelessWidget {
   final Map<String, dynamic> product;
 
-  ItemCard({
+  const ItemCard({
+    super.key,
     required this.product,
   });
 
@@ -163,7 +167,9 @@ class ItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ProductView(itemDetails: product)));
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductView(itemDetails: product)));
       },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -172,7 +178,7 @@ class ItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
               ),
@@ -188,12 +194,12 @@ class ItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(product['name'],
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4.0),
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4.0),
                   Text('LKR ${product['price'].toString()}',
-                      style: TextStyle(fontSize: 14)),
-                  SizedBox(height: 4.0),
-                  Text("Hello",
+                      style: const TextStyle(fontSize: 14)),
+                  const SizedBox(height: 4.0),
+                  const Text("Hello",
                       style: TextStyle(fontSize: 12, color: Colors.grey)),
                 ],
               ),
@@ -205,11 +211,11 @@ class ItemCard extends StatelessWidget {
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                 ),
-                child: Text('For Rent', style: TextStyle(fontSize: 14)),
+                child: const Text('For Rent', style: TextStyle(fontSize: 14)),
               ),
             ),
           ],

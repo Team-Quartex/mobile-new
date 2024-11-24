@@ -15,10 +15,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false;
-  bool _obscureText = true;
+  final bool _isLoading = false;
+  final bool _obscureText = true;
   String? _errorMessage;
-  bool _showError = false;
+  final bool _showError = false;
   ApiService? _apiService;
 
   @override
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: screenHeight * 0.05),
                   if (_isLoading)
-                    Center(
+                    const Center(
                       child: CircularProgressIndicator(
                         color: Color(0xFF238688),
                       ),
@@ -111,10 +111,10 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: _isLoading ? screenHeight * 0.02 : 0),
                   AnimatedOpacity(
                     opacity: _errorMessage != null ? 1.0 : 0.0,
-                    duration: Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     child: Center(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Text(
                           _errorMessage ?? '',
                           textAlign: TextAlign.center,
@@ -152,7 +152,8 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SignupPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const SignupPage()),
                         );
                       },
                       child: Text.rich(
@@ -198,13 +199,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() async {
-    if (await _apiService!.userLogin(
-        _usernameController.text, _passwordController.text)) {
-          GetIt.instance.registerSingleton<UserClass>(UserClass());
+    if (await _apiService!
+        .userLogin(_usernameController.text, _passwordController.text)) {
+      GetIt.instance.registerSingleton<UserClass>(UserClass());
       Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
     } else {
       print('fail');
     }

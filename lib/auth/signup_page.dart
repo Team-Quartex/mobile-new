@@ -14,10 +14,10 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isAgreed = false;
   ApiService? _apiService;
 
@@ -52,11 +52,11 @@ class _SignupPageState extends State<SignupPage> {
 
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Signup successful!')),
+            const SnackBar(content: Text('Signup successful!')),
           );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         } else {
           throw Exception('Failed to sign up');
@@ -237,7 +237,7 @@ class _SignupPageState extends State<SignupPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => LoginPage()),
+                                  builder: (context) => const LoginPage()),
                             );
                           },
                           child: Text.rich(
@@ -285,13 +285,17 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  void _register() async{
-    if (_formKey.currentState?.validate() ?? false){
-      if(await  _apiService!.userRegister(_usernameController.text, _nameController.text, _emailController.text, _passwordController.text)){
+  void _register() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (await _apiService!.userRegister(
+          _usernameController.text,
+          _nameController.text,
+          _emailController.text,
+          _passwordController.text)) {
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          );
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
       }
     }
   }

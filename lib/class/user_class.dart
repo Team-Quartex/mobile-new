@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 class UserClass extends ApiService {
   ApiService? _apiService;
+  @override
   String? authToken;
   String? userName;
   int? userid;
@@ -66,6 +67,4 @@ class UserClass extends ApiService {
       print("Exception: $e");
     }
   }
-
-
 }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 class PostClass extends ApiService {
   ApiService? _apiService;
+  @override
   String? authToken;
   PostClass() {
     _apiService = GetIt.instance.get<ApiService>();
@@ -77,7 +78,7 @@ class PostClass extends ApiService {
     }
   }
 
-  Future<void> addComment(int id,String content) async {
+  Future<void> addComment(int id, String content) async {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/comments/addcomment"),
@@ -87,7 +88,7 @@ class PostClass extends ApiService {
         },
         body: json.encode({
           "postId": id,
-          "content":content,
+          "content": content,
         }),
       );
       if (response.statusCode == 200) {
@@ -99,5 +100,4 @@ class PostClass extends ApiService {
       print("Exception: $e");
     }
   }
-
 }

@@ -33,7 +33,7 @@ class _LandingpageState extends State<HomeContent> {
         future: GetIt.instance.get<UserClass>().fetchUser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -52,34 +52,36 @@ class _LandingpageState extends State<HomeContent> {
                           backgroundImage: userClass.profilepic != null
                               ? NetworkImage(
                                   'http://192.168.0.102/uploads/${userClass.profilepic}')
-                              : AssetImage('assets/default_profile_pic.png'),
+                              : const AssetImage(
+                                  'assets/default_profile_pic.png'),
                           radius: 25,
                         ),
-                        SizedBox(width: 10),
-                        Text('Welcome',
+                        const SizedBox(width: 10),
+                        const Text('Welcome',
                             style: TextStyle(
                                 fontSize: 22, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     Text(userClass.name.toString(),
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: const Color.fromARGB(255, 0, 0, 0))),
+                        style: const TextStyle(
+                            fontSize: 18, color: Color.fromARGB(255, 0, 0, 0))),
                   ],
                 ),
                 actions: [
+                  // IconButton(
+                  //   icon: Icon(Icons.shopping_cart),
+                  //   onPressed: () {
+                  //     Navigator.push(context,
+                  //         MaterialPageRoute(builder: (context) => Cart()));
+                  //   },
+                  // ),
                   IconButton(
-                    icon: Icon(Icons.shopping_cart),
+                    icon: const Icon(Icons.notifications),
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Cart()));
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.notifications),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Cart()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Cart()));
                     },
                   ),
                 ],
@@ -88,11 +90,11 @@ class _LandingpageState extends State<HomeContent> {
                 future: PostClass().fetchPost(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No posts available'));
+                    return const Center(child: Text('No posts available'));
                   } else {
                     final posts = snapshot.data!;
 
@@ -100,7 +102,11 @@ class _LandingpageState extends State<HomeContent> {
                       itemCount: posts.length,
                       itemBuilder: (context, index) {
                         final post = posts[index];
-                        return PostCard(post: post, userId: userId!,profilePic: profilePic!,);
+                        return PostCard(
+                          post: post,
+                          userId: userId!,
+                          profilePic: profilePic!,
+                        );
                       },
                     );
                   }
@@ -113,7 +119,7 @@ class _LandingpageState extends State<HomeContent> {
 
   Widget _postCard(Map<dynamic, dynamic> post) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -121,8 +127,8 @@ class _LandingpageState extends State<HomeContent> {
       child: Column(
         children: [
           Card(
-            margin: EdgeInsets.all(8),
-            color: Color(0xFFE0EEEE),
+            margin: const EdgeInsets.all(8),
+            color: const Color(0xFFE0EEEE),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
@@ -138,16 +144,16 @@ class _LandingpageState extends State<HomeContent> {
                             "http://192.168.0.102/uploads/${post['profilePic']}"),
                         radius: 25,
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Text(post['name'],
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              SizedBox(width: 10),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(width: 10),
                               TextButton(
                                 onPressed: () {},
                                 style: TextButton.styleFrom(
@@ -155,10 +161,10 @@ class _LandingpageState extends State<HomeContent> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 4),
                                 ),
-                                child: Text(
+                                child: const Text(
                                   'Follow',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -170,12 +176,15 @@ class _LandingpageState extends State<HomeContent> {
                             ],
                           ),
                           Text(post['postTime'],
-                              style: TextStyle(color: Colors.grey)),
+                              style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.more_vert),
+                        icon: const Icon(
+                          Icons.bookmark_border_rounded,
+                          size: 20,
+                        ),
                         onPressed: () {},
                       ),
                     ],
@@ -187,7 +196,7 @@ class _LandingpageState extends State<HomeContent> {
                 ),
                 post['images'].length == 0
                     ? Container()
-                    : Container(
+                    : SizedBox(
                         height: 250,
                         child: PageView.builder(
                           padEnds: false,
@@ -196,7 +205,7 @@ class _LandingpageState extends State<HomeContent> {
                             return Image.network(
                               "http://192.168.0.102:8000/uploads/${post['images'][index]}",
                               errorBuilder: (context, error, stackTrace) {
-                                return Icon(Icons.error);
+                                return const Icon(Icons.error);
                               },
                             );
                           },
@@ -208,30 +217,34 @@ class _LandingpageState extends State<HomeContent> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.favorite,
+                        icon: Icon(Icons.favorite_border_outlined,
                             size: 20,
                             color: post['likeduser'].contains(userId.toString())
-                                ? Color(0xFFFF0000)
-                                : Color.fromARGB(255, 78, 78, 78)),
+                                ? const Color(0xFFFF0000)
+                                : const Color.fromARGB(255, 78, 78, 78)),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Like()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Like()));
                         },
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text('${post['likeduser']?.length ?? 0} Likes',
-                          style: TextStyle(color: Colors.grey)),
-                      Spacer(),
+                          style: const TextStyle(color: Colors.grey)),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.comment, size: 20, color: Colors.grey),
+                        icon: const Icon(Icons.comment,
+                            size: 20, color: Colors.grey),
                         onPressed: () {},
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text('${post['comments']} Comments',
-                          style: TextStyle(color: Colors.grey)),
-                      Spacer(),
+                          style: const TextStyle(color: Colors.grey)),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.share, size: 20, color: Colors.grey),
+                        icon: const Icon(Icons.share,
+                            size: 20, color: Colors.grey),
                         onPressed: () {},
                       ),
                     ],
@@ -250,12 +263,12 @@ class _LandingpageState extends State<HomeContent> {
               ),
               child: Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 20,
                     backgroundImage: AssetImage('assets/profile.jpg'),
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
+                  const SizedBox(width: 10),
+                  const Expanded(
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Type a comment...',
@@ -267,13 +280,14 @@ class _LandingpageState extends State<HomeContent> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(1),
+                    padding: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.send, color: Colors.white, size: 18),
+                      icon:
+                          const Icon(Icons.send, color: Colors.white, size: 18),
                       onPressed: () {},
                     ),
                   ),

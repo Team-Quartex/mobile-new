@@ -13,8 +13,11 @@ class PostCard extends StatefulWidget {
   final int userId;
   final String profilePic;
 
-  PostCard(
-      {required this.post, required this.userId, required this.profilePic});
+  const PostCard(
+      {super.key,
+      required this.post,
+      required this.userId,
+      required this.profilePic});
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -26,9 +29,10 @@ class _PostCardState extends State<PostCard> {
   bool isFollow = false;
   int commentCount = 0;
   ApiService? _apiService;
-  PostClass _postClass = PostClass();
-  UserClass _userClass = UserClass();
+  final PostClass _postClass = PostClass();
+  final UserClass _userClass = UserClass();
   final TextEditingController _commentcontroller = TextEditingController();
+  final bool isSaved = false;
 
   @override
   void initState() {
@@ -59,7 +63,7 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -67,8 +71,8 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         children: [
           Card(
-            margin: EdgeInsets.all(8),
-            color: Color(0xFFE0EEEE),
+            margin: const EdgeInsets.all(8),
+            color: const Color(0xFFE0EEEE),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
@@ -84,16 +88,16 @@ class _PostCardState extends State<PostCard> {
                             "http://192.168.0.102/uploads/${widget.post['profilePic']}"),
                         radius: 25,
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Text(widget.post['name'],
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              SizedBox(width: 10),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(width: 10),
                               isFollow
                                   ? TextButton(
                                       onPressed: () {
@@ -109,10 +113,10 @@ class _PostCardState extends State<PostCard> {
                                           borderRadius:
                                               BorderRadius.circular(20),
                                         ),
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: 12, vertical: 4),
                                       ),
-                                      child: Text(
+                                      child: const Text(
                                         'Follow',
                                         style: TextStyle(
                                           color: Colors.white,
@@ -125,14 +129,25 @@ class _PostCardState extends State<PostCard> {
                             ],
                           ),
                           Text(widget.post['postTime'],
-                              style: TextStyle(color: Colors.grey)),
+                              style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: () {},
-                      ),
+                      const Spacer(),
+                      isFollow
+                          ? IconButton(
+                              icon: const Icon(
+                                Icons.bookmark,
+                                size: 20,
+                              ),
+                              onPressed: () {},
+                            )
+                          : IconButton(
+                              icon: const Icon(
+                                Icons.bookmark_border_rounded,
+                                size: 20,
+                              ),
+                              onPressed: () {},
+                            )
                     ],
                   ),
                 ),
@@ -143,20 +158,20 @@ class _PostCardState extends State<PostCard> {
                 ),
                 widget.post['images'].length == 0
                     ? Container()
-                    : Container(
+                    : SizedBox(
                         height: 250,
                         child: PageView.builder(
                           padEnds: false,
                           itemCount: widget.post['images'].length,
                           itemBuilder: (context, index) {
                             return ZoomOverlay(
-                              modalBarrierColor: Colors.black12,
+                                modalBarrierColor: Colors.black12,
                                 child: Image.network(
-                              "http://192.168.0.102:8000/uploads/${widget.post['images'][index]}",
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(Icons.error);
-                              },
-                            ));
+                                  "http://192.168.0.102:8000/uploads/${widget.post['images'][index]}",
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(Icons.error);
+                                  },
+                                ));
                           },
                         ),
                       ),
@@ -169,29 +184,31 @@ class _PostCardState extends State<PostCard> {
                         icon: Icon(Icons.favorite,
                             size: 20,
                             color: isLiked
-                                ? Color(0xFFFF0000)
-                                : Color.fromARGB(255, 78, 78, 78)),
+                                ? const Color(0xFFFF0000)
+                                : const Color.fromARGB(255, 78, 78, 78)),
                         onPressed: _toggleLike,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text('$likeCount Likes',
-                          style: TextStyle(color: Colors.grey)),
-                      Spacer(),
+                          style: const TextStyle(color: Colors.grey)),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.comment, size: 20, color: Colors.grey),
+                        icon: const Icon(Icons.comment,
+                            size: 20, color: Colors.grey),
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Comment()));
+                                  builder: (context) => const Comment()));
                         },
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text('$commentCount Comments',
-                          style: TextStyle(color: Colors.grey)),
-                      Spacer(),
+                          style: const TextStyle(color: Colors.grey)),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.share, size: 20, color: Colors.grey),
+                        icon: const Icon(Icons.share,
+                            size: 20, color: Colors.grey),
                         onPressed: () {},
                       ),
                     ],
@@ -215,11 +232,11 @@ class _PostCardState extends State<PostCard> {
                     backgroundImage: NetworkImage(
                         "http://192.168.0.102/uploads/${widget.profilePic}"),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
                       controller: _commentcontroller,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Type a comment...',
                         hintStyle: TextStyle(color: Colors.grey),
                         border: InputBorder.none,
@@ -229,13 +246,14 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(1),
+                    padding: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.send, color: Colors.white, size: 18),
+                      icon:
+                          const Icon(Icons.send, color: Colors.white, size: 18),
                       onPressed: () {
                         if (_commentcontroller.text.isNotEmpty) {
                           PostClass().addComment(

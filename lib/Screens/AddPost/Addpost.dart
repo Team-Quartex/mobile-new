@@ -10,7 +10,7 @@ class Addpost extends StatefulWidget {
 class _AddpostState extends State<Addpost> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text("Hello Sri Lanka"),
       ),

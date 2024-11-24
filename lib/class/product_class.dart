@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 class ProductClass extends ApiService {
   ApiService? _apiService;
+  @override
   String? authToken;
   ProductClass() {
     _apiService = GetIt.instance.get<ApiService>();
@@ -106,6 +107,28 @@ class ProductClass extends ApiService {
     } catch (e) {
       print(e);
       return false;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchOrderHistory(int userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/reservation/userorders?userId=$userId"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'accessToken=$authToken',
+        },
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((item) => item as Map<String, dynamic>).toList();
+      } else {
+        print("Error: ${response.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return [];
     }
   }
 }

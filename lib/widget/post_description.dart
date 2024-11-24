@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PostDescription extends StatefulWidget {
   final String description;
 
-  const PostDescription({required this.description, Key? key}) : super(key: key);
+  const PostDescription({required this.description, super.key});
 
   @override
   _PostDescriptionState createState() => _PostDescriptionState();
@@ -21,7 +21,7 @@ class _PostDescriptionState extends State<PostDescription> {
     const int characterLimit = 150;
     if (widget.description.length > characterLimit) {
       isOverflowing = true;
-      truncatedText = widget.description.substring(0, characterLimit) + "...";
+      truncatedText = "${widget.description.substring(0, characterLimit)}...";
     } else {
       isOverflowing = false;
       truncatedText = widget.description;
@@ -37,7 +37,7 @@ class _PostDescriptionState extends State<PostDescription> {
         children: [
           Text(
             isExpanded ? widget.description : truncatedText,
-            style: TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14),
           ),
           if (isOverflowing) // Only show "See more/less" if the text overflows
             GestureDetector(
@@ -48,7 +48,7 @@ class _PostDescriptionState extends State<PostDescription> {
               },
               child: Text(
                 isExpanded ? "See less" : "See more",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
                 ),
