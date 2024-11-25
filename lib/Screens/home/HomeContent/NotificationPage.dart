@@ -17,7 +17,8 @@ class _NotificationPageState extends State<NotificationPage> {
   void initState() {
     super.initState();
     final notificationService = NotificationService();
-    _notifications = notificationService.fetchNotifications();
+    _notifications = notificationService.fetchNotifications()
+        as Future<List<NotificationModel>>;
   }
 
   @override
