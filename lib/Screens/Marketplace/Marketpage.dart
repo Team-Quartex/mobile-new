@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:trova/Screens/Marketplace/product_view.dart';
-import 'dart:convert';
 
 import 'package:trova/class/product_class.dart';
 
@@ -74,7 +72,7 @@ class MarketPage extends StatelessWidget {
                 ),
               ),
             ),
-            SingleChildScrollView(
+            const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [

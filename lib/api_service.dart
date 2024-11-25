@@ -95,8 +95,4 @@ class ApiService {
     return match?.group(1) ??
         ''; // Return the token or an empty string if not found
   }
-
-  
-
-  
 }

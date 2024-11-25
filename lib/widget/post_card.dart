@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:http/http.dart';
 import 'package:trova/Screens/home/HomeContent/Comment.dart';
 import 'package:trova/api_service.dart';
 import 'package:trova/class/post_class.dart';

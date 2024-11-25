@@ -204,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
       GetIt.instance.registerSingleton<UserClass>(UserClass());
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } else {
       print('fail');

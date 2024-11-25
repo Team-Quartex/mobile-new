@@ -6,7 +6,6 @@ import 'package:get_it/get_it.dart';
 import 'package:trova/class/user_class.dart';
 import 'package:trova/class/post_class.dart';
 import 'package:trova/widget/post_card.dart';
-import 'package:trova/widget/post_description.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -43,7 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => OrderHistory()),
+                        MaterialPageRoute(
+                            builder: (context) => const OrderHistory()),
                       );
                     },
                   ),
@@ -52,7 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Editprofile()),
+                        MaterialPageRoute(
+                            builder: (context) => const Editprofile()),
                       );
                     },
                   ),
