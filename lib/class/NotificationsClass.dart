@@ -16,7 +16,7 @@ class NotificationsClass extends ApiService {
   Future<List<Map<String, dynamic>>> fetchNotifications() async {
     try {
       final response = await http.get(
-        Uri.parse("$baseUrl/notifications"),
+        Uri.parse("$baseUrl/notification"),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': 'accessToken=$authToken',
@@ -25,6 +25,7 @@ class NotificationsClass extends ApiService {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        print(data);
         return data.map((item) => item as Map<String, dynamic>).toList();
       } else {
         print("Error: ${response.statusCode}");

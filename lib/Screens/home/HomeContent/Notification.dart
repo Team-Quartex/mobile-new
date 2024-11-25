@@ -48,10 +48,10 @@ class _NotificationPageState extends State<NotificationPage> {
 
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(notification['userImage']),
+                    backgroundImage: NetworkImage("http://192.168.0.101/uploads/${notification['profilepic']}"),
                   ),
-                  title: Text(notification['message']),
-                  subtitle: Text(notification['subtext']),
+                  title: Text(notification['name']),
+                  subtitle: Text("Start Following you"),
                   trailing: isRead
                       ? const Icon(Icons.check_circle, color: Colors.green)
                       : IconButton(
