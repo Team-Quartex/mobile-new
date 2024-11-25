@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:trova/Screens/home/HomeContent/Notification.dart';
+import 'package:trova/Screens/home/HomeContent/NotificationPage.dart';
 import 'package:trova/api_service.dart';
 import 'package:trova/class/post_class.dart';
 import 'package:trova/class/user_class.dart';

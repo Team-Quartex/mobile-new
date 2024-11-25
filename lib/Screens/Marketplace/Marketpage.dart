@@ -192,28 +192,40 @@ class ItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(product['name'],
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4.0),
-                  Text('LKR ${product['price'].toString()}',
-                      style: const TextStyle(fontSize: 14)),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 4.0),
                   const Text("Hello",
                       style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text('LKR ${product['price'].toString()}',
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4.0),
                 ],
               ),
             ),
             // Rent Button
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+              child: SizedBox(
+                width: 150, // Set the desired width
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF238688),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: const Text(
+                    'For Rent',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                child: const Text('For Rent', style: TextStyle(fontSize: 14)),
               ),
             ),
           ],
