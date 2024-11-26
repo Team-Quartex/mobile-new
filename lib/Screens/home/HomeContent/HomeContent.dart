@@ -7,7 +7,6 @@ import 'package:trova/class/user_class.dart';
 import 'package:trova/widget/post_card.dart';
 import 'package:trova/widget/post_description.dart';
 import 'Like.dart';
-import 'Cart.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});

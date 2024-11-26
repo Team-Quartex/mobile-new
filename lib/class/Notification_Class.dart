@@ -1,31 +1,33 @@
 import 'package:get_it/get_it.dart';
+import 'package:trova/api_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:trova/api_service.dart';
 
-class NotificationService extends ApiService {
+class NotificationClass extends ApiService {
   ApiService? _apiService;
   @override
   String? authToken;
 
-  NotificationService() {
+  NotificationClass() {
     _apiService = GetIt.instance.get<ApiService>();
     authToken = _apiService!.authToken;
   }
 
-  Future<List<Map<String, dynamic>>> fetchNotifications() async {
+  Future<List<Map<String, dynamic>>> getNotifications() async {
     try {
       final response = await http.get(
-        Uri.parse("$baseUrl/notification"),
+        Uri.parse("$baseUrl/notifications/"),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': 'accessToken=$authToken',
         },
       );
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        print(data);
+        print("Parsed Data: $data");
         return data.map((item) => item as Map<String, dynamic>).toList();
       } else {
         print("Error: ${response.statusCode}");
@@ -37,7 +39,7 @@ class NotificationService extends ApiService {
     }
   }
 
-  Future<void> markNotificationAsRead(String notificationId) async {
+  Future<bool> markAsRead(int notifyId) async {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/notifications/viewnotification"),
@@ -45,14 +47,17 @@ class NotificationService extends ApiService {
           'Content-Type': 'application/json',
           'Cookie': 'accessToken=$authToken',
         },
-        body: json.encode({"notificationId": notificationId}),
+        body: json.encode({'notifyId': notifyId}),
       );
-
-      if (response.statusCode != 200) {
+      if (response.statusCode == 200) {
+        return true;
+      } else {
         print("Error: ${response.statusCode}");
+        return false;
       }
     } catch (e) {
       print("Exception: $e");
+      return false;
     }
   }
 }

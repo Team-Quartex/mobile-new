@@ -26,7 +26,6 @@ class UserPostClass extends ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        // Filter posts by the logged-in user's ID
         return data
             .map((item) => item as Map<String, dynamic>)
             .where((post) => post['userId'] == userId)

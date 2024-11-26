@@ -3,7 +3,7 @@ import 'package:trova/class/OrderService.dart';
 import 'package:trova/widget/OrderCard.dart';
 
 class OrderHistory extends StatefulWidget {
-  const OrderHistory({Key? key}) : super(key: key);
+  const OrderHistory({super.key});
 
   @override
   _OrderHistoryState createState() => _OrderHistoryState();

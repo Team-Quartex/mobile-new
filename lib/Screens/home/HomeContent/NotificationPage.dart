@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:trova/class/NotificationService.dart';
-import 'package:trova/model/NotificationModel.dart';
-import 'package:trova/widget/NotificationCard.dart';
+import 'package:trova/class/Notification_Class.dart';
+import 'package:trova/widget/NotificationWidget.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({Key? key}) : super(key: key);
 
   @override
-  State<NotificationPage> createState() => _NotificationPageState();
+  _NotificationPageState createState() => _NotificationPageState();
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  late Future<List<NotificationModel>> _notifications;
+  late NotificationClass _notificationClass;
+  late Future<List<Map<String, dynamic>>> _notifications;
 
   @override
   void initState() {
     super.initState();
-    final notificationService = NotificationService();
-    _notifications = notificationService.fetchNotifications()
-        as Future<List<NotificationModel>>;
+    _notificationClass = NotificationClass();
+    _notifications = _notificationClass.getNotifications();
+  }
+
+  void _markAsRead(int notifyId) async {
+    final success = await _notificationClass.markAsRead(notifyId);
+    if (success) {
+      setState(() {
+        _notifications = _notificationClass.getNotifications();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to mark notification as read')),
+      );
+    }
   }
 
   @override
@@ -27,23 +39,29 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         title: const Text("Notifications"),
       ),
-      body: FutureBuilder<List<NotificationModel>>(
+      body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _notifications,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return const Center(child: Text("Error loading notifications"));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text("No notifications available"));
+          } else {
+            final notifications = snapshot.data!;
+            print("Notifications loaded: $notifications");
+
             return ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: notifications.length,
               itemBuilder: (context, index) {
-                final notification = snapshot.data![index];
-                return NotificationCard(notification: notification);
+                final notification = notifications[index];
+                return NotificationWidget(
+                  notification: notification,
+                  onView: () => _markAsRead(notification['notifyid']),
+                );
               },
             );
-          } else {
-            return const Center(child: Text('No notifications available'));
           }
         },
       ),

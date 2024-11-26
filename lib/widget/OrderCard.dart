@@ -6,11 +6,11 @@ class OrderCard extends StatelessWidget {
   final String orderTime;
 
   const OrderCard({
-    Key? key,
+    super.key,
     required this.productId,
     required this.quantity,
     required this.orderTime,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
