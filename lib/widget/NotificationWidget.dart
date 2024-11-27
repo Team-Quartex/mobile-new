@@ -19,7 +19,7 @@ class NotificationWidget extends StatelessWidget {
         isViewed ? Icons.notifications : Icons.notifications_active,
         color: isViewed ? Colors.grey : Colors.blue,
       ),
-      title: Text(notification['description']),
+      title: Text(notification['notifytype']),
       subtitle: Text(notification['notifiedtime']),
       trailing: !isViewed
           ? ElevatedButton(

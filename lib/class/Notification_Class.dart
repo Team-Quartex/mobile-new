@@ -16,7 +16,7 @@ class NotificationClass extends ApiService {
   Future<List<Map<String, dynamic>>> getNotifications() async {
     try {
       final response = await http.get(
-        Uri.parse("$baseUrl/notifications/"),
+        Uri.parse("$baseUrl/notification"),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': 'accessToken=$authToken',

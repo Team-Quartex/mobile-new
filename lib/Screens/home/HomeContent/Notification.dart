@@ -28,7 +28,7 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   void _markAsRead(String notificationId) async {
-    await _notificationsClass.markNotificationAsRead(notificationId);
+    await _notificationsClass.markAsRead(int.parse(notificationId));
     _fetchNotifications();
   }
 

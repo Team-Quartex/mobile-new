@@ -105,7 +105,7 @@ class MarketPage extends StatelessWidget {
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
-                      childAspectRatio: (1 / 1.55),
+                      childAspectRatio: (1 / 1.62),
                     ),
                     itemCount: items.length,
                     itemBuilder: (context, index) {

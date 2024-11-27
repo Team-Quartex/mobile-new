@@ -82,130 +82,132 @@ class _EditProfileState extends State<EditProfile> {
           ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.grey[300],
-                          backgroundImage: userClass.profilepic != null
-                              ? NetworkImage(
-                                  'http://192.168.0.102/uploads/${userClass.profilepic}')
-                              : null,
-                          child: userClass.profilepic == null
-                              ? const Icon(Icons.person,
-                                  size: 50, color: Colors.white)
-                              : null,
-                        ),
-                        Positioned(
-                          bottom: 4,
-                          right: 4,
-                          child: InkWell(
-                            onTap: () {},
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFF238688),
-                                shape: BoxShape.circle,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.grey[300],
+                            backgroundImage: userClass.profilepic != null
+                                ? NetworkImage(
+                                    'http://192.168.0.102/uploads/${userClass.profilepic}')
+                                : null,
+                            child: userClass.profilepic == null
+                                ? const Icon(Icons.person,
+                                    size: 50, color: Colors.white)
+                                : null,
+                          ),
+                          Positioned(
+                            bottom: 4,
+                            right: 4,
+                            child: InkWell(
+                              onTap: () {},
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF238688),
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: const EdgeInsets.all(5.0),
+                                child: const Icon(Icons.camera_alt,
+                                    color: Colors.white, size: 18),
                               ),
-                              padding: const EdgeInsets.all(5.0),
-                              child: const Icon(Icons.camera_alt,
-                                  color: Colors.white, size: 18),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
+                        border: UnderlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: TextEditingController(text: userClass.userName),
+                      decoration: const InputDecoration(
+                        labelText: 'User name',
+                        border: UnderlineInputBorder(),
+                      ),
+                      enabled: false,
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller:
+                          TextEditingController(text: userClass.useremail),
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: UnderlineInputBorder(),
+                      ),
+                      enabled: false,
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: contactController,
+                      decoration: const InputDecoration(
+                        labelText: 'Contact number',
+                        border: UnderlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: addressController,
+                      decoration: const InputDecoration(
+                        labelText: 'Address',
+                        border: UnderlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextButton(
+                          onPressed: _saveChanges,
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF238688),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Logout',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Delete Account',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
                             ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Name',
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: TextEditingController(text: userClass.userName),
-                    decoration: const InputDecoration(
-                      labelText: 'User name',
-                      border: UnderlineInputBorder(),
-                    ),
-                    enabled: false,
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller:
-                        TextEditingController(text: userClass.useremail),
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: UnderlineInputBorder(),
-                    ),
-                    enabled: false,
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: contactController,
-                    decoration: const InputDecoration(
-                      labelText: 'Contact number',
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: addressController,
-                    decoration: const InputDecoration(
-                      labelText: 'Address',
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextButton(
-                        onPressed: _saveChanges,
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF238688),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 1),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Logout',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 1),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Delete Account',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );
