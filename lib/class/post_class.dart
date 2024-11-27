@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:get_it/get_it.dart';
 import 'package:trova/api_service.dart';
 import 'dart:convert';

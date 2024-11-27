@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:trova/Screens/home/HomeContent/Comment.dart';
-//import 'package:trova/Screens/home/HomeContent/UserProfilePage.dart';
 import 'package:trova/api_service.dart';
 import 'package:trova/class/post_class.dart';
 import 'package:trova/class/user_class.dart';
 import 'package:trova/widget/post_description.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
+import '../Screens/Profile/OtherUsers.dart';
 
 class PostCard extends StatefulWidget {
   final Map<dynamic, dynamic> post;
   final int userId;
   final String profilePic;
 
-  const PostCard(
-      {super.key,
-      required this.post,
-      required this.userId,
-      required this.profilePic});
+  const PostCard({
+    super.key,
+    required this.post,
+    required this.userId,
+    required this.profilePic,
+  });
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -40,9 +41,7 @@ class _PostCardState extends State<PostCard> {
     isLiked = widget.post['likeduser'].contains(widget.userId.toString());
     likeCount = widget.post['likeduser'].length;
     commentCount = widget.post['comments'];
-    isFollow =
-        (widget.post['isFollowed'] == 'no' && widget.post['verify'] == 'yes') &&
-            widget.post['userId'] != widget.userId;
+    isFollow = (widget.post['isFollowed'] == 'no' && widget.post['verify'] == 'yes') && widget.post['userId'] != widget.userId;
     _apiService = GetIt.instance.get<ApiService>();
   }
 
@@ -60,12 +59,12 @@ class _PostCardState extends State<PostCard> {
   }
 
   void _navigateToUserProfile(BuildContext context) {
-    //Navigator.push(
-    //context,
-    //MaterialPageRoute(
-    //builder: (context) => UserProfilePage(userId: widget.post['userId']),
-    //),
-    //);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Otherusers(userId: widget.post['userId']),
+      ),
+    );
   }
 
   void _toggleSave() async {
@@ -116,10 +115,10 @@ class _PostCardState extends State<PostCard> {
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap: () => _navigateToUserProfile(context),
+                        onTap: () => _navigateToOtherUsers(context),
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              "http://192.168.0.102/uploads/${widget.post['profilePic']}"),
+                              "http://192.168.65.1/uploads/${widget.post['profilePic']}"),
                           radius: 25,
                         ),
                       ),
@@ -128,7 +127,7 @@ class _PostCardState extends State<PostCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           GestureDetector(
-                            onTap: () => _navigateToUserProfile(context),
+                            onTap: () => _navigateToOtherUsers(context),
                             child: Row(
                               children: [
                                 Text(widget.post['name'],
@@ -184,7 +183,7 @@ class _PostCardState extends State<PostCard> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child:
-                      PostDescription(description: widget.post['description']),
+                  PostDescription(description: widget.post['description']),
                 ),
                 if (widget.post['images'].isNotEmpty)
                   SizedBox(
@@ -196,7 +195,7 @@ class _PostCardState extends State<PostCard> {
                         return ZoomOverlay(
                           modalBarrierColor: Colors.black12,
                           child: Image.network(
-                            "http://192.168.0.102:8000/uploads/${widget.post['images'][index]}",
+                            "http://192.168.65.1:8000/uploads/${widget.post['images'][index]}",
                             errorBuilder: (context, error, stackTrace) {
                               return const Icon(Icons.error);
                             },
@@ -249,7 +248,7 @@ class _PostCardState extends State<PostCard> {
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -260,7 +259,7 @@ class _PostCardState extends State<PostCard> {
                   CircleAvatar(
                     radius: 20,
                     backgroundImage: NetworkImage(
-                        "http://192.168.0.102/uploads/${widget.profilePic}"),
+                        "http://192.168.65.1/uploads/${widget.profilePic}"),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -283,7 +282,7 @@ class _PostCardState extends State<PostCard> {
                     ),
                     child: IconButton(
                       icon:
-                          const Icon(Icons.send, color: Colors.white, size: 18),
+                      const Icon(Icons.send, color: Colors.white, size: 18),
                       onPressed: () {
                         if (_commentController.text.isNotEmpty) {
                           PostClass().addComment(
@@ -300,6 +299,15 @@ class _PostCardState extends State<PostCard> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  _navigateToOtherUsers(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Otherusers(userId: widget.post['userId']),
       ),
     );
   }

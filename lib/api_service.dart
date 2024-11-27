@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  String baseUrl = "http://192.168.0.102/api";
+  String baseUrl = "http://192.168.65.1/api";
 
   ApiService();
   String? token;
@@ -95,4 +95,35 @@ class ApiService {
     return match?.group(1) ??
         ''; // Return the token or an empty string if not found
   }
+
+  // Fetch user details using their userId
+  Future<Map<String, dynamic>?> fetchUserDetails(int userId) async {
+    print("Fetching user details for userId: $userId");
+
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/users/otheruser?uid=$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'accessToken=$authToken',
+        },
+      );
+
+      print("Response status code: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        print("Response body: ${response.body}");
+
+        return json.decode(response.body);
+      } else {
+        print("Error: Failed to load user details (status code: ${response.statusCode})");
+        throw Exception('Failed to load user details');
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return null;
+    }
+  }
+
+
 }
