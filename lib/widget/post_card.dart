@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart';
 import 'package:trova/Screens/home/HomeContent/Comment.dart';
 import 'package:trova/api_service.dart';
 import 'package:trova/class/post_class.dart';
@@ -225,10 +226,13 @@ class _PostCardState extends State<PostCard> {
                         icon: const Icon(Icons.comment,
                             size: 20, color: Colors.grey),
                         onPressed: () {
+                          int postId = widget.post['postId'];
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Comment()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CommentPage(postId: postId),  // Pass postId
+                            ),
+                          );
                         },
                       ),
                       const SizedBox(width: 5),

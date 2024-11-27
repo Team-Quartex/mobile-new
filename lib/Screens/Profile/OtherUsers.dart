@@ -143,10 +143,16 @@ class _OtherusersState extends State<Otherusers> {
                     if (userDetails?['isFollowed'] == 'yes') {
                       // Unfollow functionality
                     } else {
-                      await UserClass().addFollow(userDetails?['userId']);
-                      setState(() {
-                        userDetails?['isFollowed'] = 'yes';
-                      });
+                      final int userId = int.tryParse(userDetails?['userId'].toString() ?? '') ?? 0;
+
+                      if (userId > 0) {
+                        await UserClass().addFollow(userId);
+                        setState(() {
+                          userDetails?['isFollowed'] = 'yes';
+                        });
+                      } else {
+                        print("Invalid userId: ${userDetails?['userId']}");
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
