@@ -374,9 +374,9 @@ class _ProductViewState extends State<ProductView> {
           return Theme(
             data: Theme.of(context).copyWith(
               colorScheme: const ColorScheme.light(
-                primary: Colors.teal, // Header background color
-                onPrimary: Colors.white, // Header text color
-                onSurface: Colors.black, // Body text color
+                primary: Colors.teal,
+                onPrimary: Colors.white,
+                onSurface: Colors.black,
               ),
             ),
             child: child!,

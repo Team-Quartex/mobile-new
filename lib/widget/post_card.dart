@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:trova/Screens/home/HomeContent/Comment.dart';
+//import 'package:trova/Screens/home/HomeContent/UserProfilePage.dart';
 import 'package:trova/api_service.dart';
 import 'package:trova/class/post_class.dart';
 import 'package:trova/class/user_class.dart';
@@ -27,16 +28,15 @@ class _PostCardState extends State<PostCard> {
   int likeCount = 0;
   bool isFollow = false;
   int commentCount = 0;
+  bool isSaved = false;
   ApiService? _apiService;
   final PostClass _postClass = PostClass();
   final UserClass _userClass = UserClass();
-  final TextEditingController _commentcontroller = TextEditingController();
-  final bool isSaved = false;
+  final TextEditingController _commentController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Initialize the like state and count from the post data
     isLiked = widget.post['likeduser'].contains(widget.userId.toString());
     likeCount = widget.post['likeduser'].length;
     commentCount = widget.post['comments'];
@@ -57,6 +57,39 @@ class _PostCardState extends State<PostCard> {
         _postClass.removeLike(widget.post['postId']);
       }
     });
+  }
+
+  void _navigateToUserProfile(BuildContext context) {
+    //Navigator.push(
+    //context,
+    //MaterialPageRoute(
+    //builder: (context) => UserProfilePage(userId: widget.post['userId']),
+    //),
+    //);
+  }
+
+  void _toggleSave() async {
+    try {
+      print('Toggling save for post ID: ${widget.post['postId']}');
+      setState(() {
+        isSaved = !isSaved;
+      });
+
+      if (isSaved) {
+        print('Calling addSavedPost...');
+        await _postClass!.addSavedPost(widget.post['postId']);
+        print('Post saved successfully.');
+      } else {
+        print('Calling removeSavedPost...');
+        await _postClass!.removeSavedPost(widget.post['postId']);
+        print('Post unsaved successfully.');
+      }
+    } catch (e) {
+      print("Error while saving/removing post: $e");
+      setState(() {
+        isSaved = !isSaved; // Revert state if API call fails
+      });
+    }
   }
 
   @override
@@ -82,71 +115,69 @@ class _PostCardState extends State<PostCard> {
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "http://192.168.0.102/uploads/${widget.post['profilePic']}"),
-                        radius: 25,
+                      GestureDetector(
+                        onTap: () => _navigateToUserProfile(context),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              "http://192.168.0.102/uploads/${widget.post['profilePic']}"),
+                          radius: 25,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text(widget.post['name'],
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(width: 10),
-                              isFollow
-                                  ? TextButton(
-                                      onPressed: () {
-                                        _userClass
-                                            .addFollow(widget.post['userId']);
-                                        setState(() {
-                                          isFollow = !isFollow;
-                                        });
-                                      },
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 4),
+                          GestureDetector(
+                            onTap: () => _navigateToUserProfile(context),
+                            child: Row(
+                              children: [
+                                Text(widget.post['name'],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                const SizedBox(width: 10),
+                                if (isFollow)
+                                  TextButton(
+                                    onPressed: () {
+                                      _userClass
+                                          .addFollow(widget.post['userId']);
+                                      setState(() {
+                                        isFollow = !isFollow;
+                                      });
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
-                                      child: const Text(
-                                        'Follow',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 4),
+                                    ),
+                                    child: const Text(
+                                      'Follow',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            ],
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                           Text(widget.post['postTime'],
                               style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
                       const Spacer(),
-                      isFollow
-                          ? IconButton(
-                              icon: const Icon(
-                                Icons.bookmark,
-                                size: 20,
-                              ),
-                              onPressed: () {},
-                            )
-                          : IconButton(
-                              icon: const Icon(
-                                Icons.bookmark_border_rounded,
-                                size: 20,
-                              ),
-                              onPressed: () {},
-                            )
+                      IconButton(
+                        icon: Icon(
+                          isSaved
+                              ? Icons.bookmark
+                              : Icons.bookmark_border_rounded,
+                          size: 20,
+                        ),
+                        onPressed: _toggleSave,
+                      ),
                     ],
                   ),
                 ),
@@ -155,25 +186,25 @@ class _PostCardState extends State<PostCard> {
                   child:
                       PostDescription(description: widget.post['description']),
                 ),
-                widget.post['images'].length == 0
-                    ? Container()
-                    : SizedBox(
-                        height: 250,
-                        child: PageView.builder(
-                          padEnds: false,
-                          itemCount: widget.post['images'].length,
-                          itemBuilder: (context, index) {
-                            return ZoomOverlay(
-                                modalBarrierColor: Colors.black12,
-                                child: Image.network(
-                                  "http://192.168.0.102:8000/uploads/${widget.post['images'][index]}",
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(Icons.error);
-                                  },
-                                ));
-                          },
-                        ),
-                      ),
+                if (widget.post['images'].isNotEmpty)
+                  SizedBox(
+                    height: 250,
+                    child: PageView.builder(
+                      padEnds: false,
+                      itemCount: widget.post['images'].length,
+                      itemBuilder: (context, index) {
+                        return ZoomOverlay(
+                          modalBarrierColor: Colors.black12,
+                          child: Image.network(
+                            "http://192.168.0.102:8000/uploads/${widget.post['images'][index]}",
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.error);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10.0, vertical: 5.0),
@@ -234,7 +265,7 @@ class _PostCardState extends State<PostCard> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
-                      controller: _commentcontroller,
+                      controller: _commentController,
                       decoration: const InputDecoration(
                         hintText: 'Type a comment...',
                         hintStyle: TextStyle(color: Colors.grey),
@@ -254,9 +285,9 @@ class _PostCardState extends State<PostCard> {
                       icon:
                           const Icon(Icons.send, color: Colors.white, size: 18),
                       onPressed: () {
-                        if (_commentcontroller.text.isNotEmpty) {
+                        if (_commentController.text.isNotEmpty) {
                           PostClass().addComment(
-                              widget.post['postId'], _commentcontroller.text);
+                              widget.post['postId'], _commentController.text);
                           setState(() {
                             commentCount++;
                           });

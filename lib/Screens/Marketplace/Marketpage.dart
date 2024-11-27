@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:trova/Screens/Marketplace/product_view.dart';
-
 import 'package:trova/class/product_class.dart';
 
 class MarketPage extends StatelessWidget {
   final ProductClass _productClass = ProductClass();
-
-  MarketPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +142,7 @@ class CategoryChip extends StatelessWidget {
           ],
         ),
         backgroundColor: Colors.grey[200],
-        padding: const EdgeInsets.symmetric(
-            vertical: 12.0, horizontal: 20.0), // Increased height
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
       ),
     );
   }
@@ -175,45 +171,81 @@ class ItemCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Image
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
               ),
               child: Image.network(
-                  'http://192.168.0.100/uploads/${product['images'][0]}',
-                  height: 120,
-                  fit: BoxFit.cover),
+                'http://192.168.0.100/uploads/${product['images'][0]}',
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
-            // Item Details
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(6.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product['name'],
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    product['name'],
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(height: 4.0),
-                  Text('LKR ${product['price'].toString()}',
-                      style: const TextStyle(fontSize: 14)),
-                  const SizedBox(height: 4.0),
-                  const Text("Hello",
-                      style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text(
+                    product['description'],
+                    style: const TextStyle(fontSize: 12),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 3.0),
+                  Text(
+                    'LKR ${product['price'].toString()}',
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 1.0),
                 ],
               ),
             ),
-            // Rent Button
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: const Text('For Rent', style: TextStyle(fontSize: 14)),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF238688),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        'For Rent',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.favorite_border,
+                      color: Colors.red,
+                      size: 24,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -228,20 +260,22 @@ class Item {
   final String name;
   final double price;
   final String category;
+  final String description;
 
   Item({
     required this.imageUrl,
     required this.name,
     required this.price,
     required this.category,
+    required this.description,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
-      imageUrl: json['imageUrl'],
-      name: json['name'],
-      price: json['price'],
-      category: json['category'],
-    );
+        imageUrl: json['imageUrl'],
+        name: json['name'],
+        price: json['price'],
+        category: json['category'],
+        description: json['description']);
   }
 }

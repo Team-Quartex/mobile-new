@@ -34,6 +34,28 @@ class ProductClass extends ApiService {
     }
   }
 
+  Future<double> getStarCount(int productId) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/reviews/star?postId=$productId"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'accessToken=$authToken',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return (data['starCount'] ?? 0.0).toDouble();
+      } else {
+        print("Error: ${response.statusCode}");
+        return 0.0;
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return 0.0;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getReviews(int proid) async {
     try {
       final response = await http.get(

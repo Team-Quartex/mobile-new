@@ -7,6 +7,7 @@ class UserClass extends ApiService {
   ApiService? _apiService;
   @override
   String? authToken;
+
   String? userName;
   int? userid;
   String? useremail;
@@ -65,6 +66,25 @@ class UserClass extends ApiService {
       }
     } catch (e) {
       print("Exception: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchUserById(int userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/users/$userId"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'accessToken=$authToken',
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception("Failed to load user data");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
     }
   }
 }
