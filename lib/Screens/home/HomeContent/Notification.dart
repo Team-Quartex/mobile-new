@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trova/class/Notification_Class.dart';
+import 'package:trova/class/image_location.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -48,7 +49,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage("http://192.168.0.101/uploads/${notification['profilepic']}"),
+                    backgroundImage: NetworkImage(ImageLocation().imageUrl(notification['profilepic'].toString())),
                   ),
                   title: Text(notification['name']),
                   subtitle: Text("Start Following you"),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:trova/Screens/home/HomeContent/NotificationPage.dart';
 import 'package:trova/api_service.dart';
+import 'package:trova/class/image_location.dart';
 import 'package:trova/class/post_class.dart';
 import 'package:trova/class/user_class.dart';
 import 'package:trova/widget/post_card.dart';
@@ -50,7 +51,7 @@ class _LandingpageState extends State<HomeContent> {
                         CircleAvatar(
                           backgroundImage: userClass.profilepic != null
                               ? NetworkImage(
-                                  'http://192.168.0.102/uploads/${userClass.profilepic}')
+                                  ImageLocation().imageUrl(userClass.profilepic.toString()))
                               : const AssetImage(
                                   'assets/default_profile_pic.png'),
                           radius: 25,
@@ -141,7 +142,7 @@ class _LandingpageState extends State<HomeContent> {
                     children: [
                       CircleAvatar(
                         backgroundImage: NetworkImage(
-                            "http://192.168.0.102/uploads/${post['profilePic']}"),
+                            ImageLocation().imageUrl(post['profilePic'].toString())),
                         radius: 25,
                       ),
                       const SizedBox(width: 10),
@@ -203,7 +204,7 @@ class _LandingpageState extends State<HomeContent> {
                           itemCount: post['images'].length,
                           itemBuilder: (context, index) {
                             return Image.network(
-                              "http://192.168.0.102:8000/uploads/${post['images'][index]}",
+                              ImageLocation().imageUrl(post['images'][index].toString()),
                               errorBuilder: (context, error, stackTrace) {
                                 return const Icon(Icons.error);
                               },

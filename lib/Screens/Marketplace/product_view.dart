@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:trova/class/image_location.dart';
 import 'package:trova/class/product_class.dart';
 import 'package:trova/widget/bottom_bar.dart';
 
@@ -66,7 +67,7 @@ class _ProductViewState extends State<ProductView> {
                   itemCount: widget.itemDetails['images'].length,
                   itemBuilder: (context, index) {
                     return Image.network(
-                      "http://192.168.0.100:8000/uploads/${widget.itemDetails['images'][index]}",
+                      ImageLocation().imageUrl(widget.itemDetails['images'][index]),
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return const Icon(Icons.error);
@@ -258,7 +259,7 @@ class _ProductViewState extends State<ProductView> {
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(
-                          "http://192.168.0.100/uploads/${review['profilepic'].toString()}"),
+                          ImageLocation().imageUrl(review['profilepic'].toString())),
                       radius: 25,
                     ),
                     SizedBox(
@@ -332,7 +333,7 @@ class _ProductViewState extends State<ProductView> {
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(
-                          "http://192.168.0.102/uploads/${widget.itemDetails['profile'].toString()}"),
+                          ImageLocation().imageUrl(widget.itemDetails['profile'].toString())),
                       radius: _deviceWidth! * 0.1,
                     ),
                     Column(

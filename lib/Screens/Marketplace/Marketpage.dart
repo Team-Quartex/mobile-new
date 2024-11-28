@@ -1,9 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:trova/Screens/Marketplace/product_view.dart';
+import 'package:trova/class/image_location.dart';
 import 'package:trova/class/product_class.dart';
 
-class MarketPage extends StatelessWidget {
+class MarketPage extends StatefulWidget {
+  @override
+  _MarketPageState createState() => _MarketPageState();
+}
+
+class _MarketPageState extends State<MarketPage> {
   final ProductClass _productClass = ProductClass();
+  final TextEditingController _searchController = TextEditingController();
+
+  List<Map<String, dynamic>> _products = [];
+  List<Map<String, dynamic>> _filteredProducts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+    _searchController.addListener(_filterProducts);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      final products = await _productClass.getProducts();
+      setState(() {
+        _products = products;
+        _filteredProducts = products;
+      });
+    } catch (e) {
+      // Handle errors appropriately
+      print('Error loading products: $e');
+    }
+  }
+
+  void _filterProducts() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredProducts = _products
+          .where((product) =>
+              product['name'].toLowerCase().contains(query) ||
+              product['description'].toLowerCase().contains(query))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +63,6 @@ class MarketPage extends StatelessWidget {
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         toolbarHeight: 80,
-        // leading: IconButton(
-        //   //icon: Icon(Icons.store_mall_directory_sharp, color: Colors.black,size: 35,),
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //   },
-        // ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -44,6 +85,7 @@ class MarketPage extends StatelessWidget {
                   ],
                 ),
                 child: TextField(
+                  controller: _searchController,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.search, color: Colors.black),
                     hintText: 'Search here...',
@@ -69,80 +111,27 @@ class MarketPage extends StatelessWidget {
                 ),
               ),
             ),
-            const SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  CategoryChip(label: 'Tent', icon: Icons.outdoor_grill),
-                  CategoryChip(label: 'Camera', icon: Icons.camera_alt),
-                  CategoryChip(label: 'Binoculars', icon: Icons.visibility),
-                  CategoryChip(label: 'Shoes', icon: Icons.sports),
-                ],
-              ),
-            ),
             const SizedBox(height: 16.0),
             Expanded(
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: _productClass.getProducts(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No items available.'));
-                  }
-
-                  var items = snapshot.data!;
-
-                  return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16.0,
-                      mainAxisSpacing: 16.0,
-                      childAspectRatio: (1 / 1.62),
+              child: _filteredProducts.isEmpty
+                  ? const Center(child: Text('No items match your search.'))
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
+                        childAspectRatio: (1 / 1.62),
+                      ),
+                      itemCount: _filteredProducts.length,
+                      itemBuilder: (context, index) {
+                        var item = _filteredProducts[index];
+                        return ItemCard(product: item);
+                      },
                     ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      var item = items[index];
-                      return ItemCard(product: item);
-                    },
-                  );
-                },
-              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class CategoryChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-
-  const CategoryChip({super.key, required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 12.0),
-      child: Chip(
-        label: Row(
-          children: [
-            Icon(icon, size: 20),
-            const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontSize: 14)),
-          ],
-        ),
-        backgroundColor: Colors.grey[200],
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
       ),
     );
   }
@@ -171,14 +160,13 @@ class ItemCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
               ),
               child: Image.network(
-                'http://192.168.0.100/uploads/${product['images'][0]}',
+                ImageLocation().imageUrl(product['images'][0]),
                 height: 120,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -208,43 +196,6 @@ class ItemCard extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 1.0),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF238688),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        'For Rent',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.favorite_border,
-                      color: Colors.red,
-                      size: 24,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -252,30 +203,5 @@ class ItemCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class Item {
-  final String imageUrl;
-  final String name;
-  final double price;
-  final String category;
-  final String description;
-
-  Item({
-    required this.imageUrl,
-    required this.name,
-    required this.price,
-    required this.category,
-    required this.description,
-  });
-
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
-        imageUrl: json['imageUrl'],
-        name: json['name'],
-        price: json['price'],
-        category: json['category'],
-        description: json['description']);
   }
 }

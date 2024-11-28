@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trova/api_service.dart';
+import 'package:trova/class/image_location.dart';
 import 'package:trova/class/user_class.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -94,7 +95,7 @@ class _EditProfileState extends State<EditProfile> {
                             backgroundColor: Colors.grey[300],
                             backgroundImage: userClass.profilepic != null
                                 ? NetworkImage(
-                                    'http://192.168.0.102/uploads/${userClass.profilepic}')
+                                    ImageLocation().imageUrl(userClass.profilepic.toString()))
                                 : null,
                             child: userClass.profilepic == null
                                 ? const Icon(Icons.person,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trova/class/UserPostClass.dart';
+import 'package:trova/class/image_location.dart';
 import 'package:trova/widget/post_card.dart';
 import 'package:get_it/get_it.dart';
 
@@ -86,7 +87,7 @@ class _OtherusersState extends State<Otherusers> {
                 CircleAvatar(
                   backgroundImage: userDetails?['profilepic'] != null
                       ? NetworkImage(
-                      'http://192.168.65.1/uploads/${userDetails?['profilepic']}')
+                      ImageLocation().imageUrl(userDetails?['profilepic']))
                       : const AssetImage('assets/default_profile_pic.png') as ImageProvider,
                   radius: 50,
                 ),
@@ -143,7 +144,7 @@ class _OtherusersState extends State<Otherusers> {
                     if (userDetails?['isFollowed'] == 'yes') {
                       // Unfollow functionality
                     } else {
-                      await UserClass().addFollow(userDetails?['userId']);
+                      await UserClass().addFollow(int.parse(userDetails?['userId']));
                       setState(() {
                         userDetails?['isFollowed'] = 'yes';
                       });
