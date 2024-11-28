@@ -26,30 +26,12 @@ class _CommentPageState extends State<CommentPage> {
     try {
       // Fetch comments for the post
       final response = await http.get(
-        Uri.parse("http://192.168.65.1/api/comments?postId=$postId"),
+        Uri.parse("http://172.20.10.4/api/comments?postId=$postId"),
       );
 
       if (response.statusCode == 200) {
-        final commentsData = json.decode(response.body);
-
-        // Now fetch user details for each comment
-        for (var post_comments in commentsData) {
-          final userResponse = await http.get(
-            Uri.parse("http://192.168.65.1/api/userDetails?userId=${post_comments['userId']}"),
-          );
-
-          if (userResponse.statusCode == 200) {
-            final userData = json.decode(userResponse.body);
-            post_comments['username'] = userData['username'];
-            post_comments['profilepic'] = userData['profilepic'];
-          } else {
-            post_comments['username'] = 'Anonymous';
-            post_comments['profilepic'] = 'default_profile_pic.jpg';
-          }
-        }
-
         setState(() {
-          comments = commentsData;
+          comments = json.decode(response.body); // Directly use the returned comments data
           isLoading = false;
         });
       } else {
@@ -66,9 +48,6 @@ class _CommentPageState extends State<CommentPage> {
     }
   }
 
-
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,57 +61,64 @@ class _CommentPageState extends State<CommentPage> {
         itemBuilder: (context, index) {
           final comment = comments[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
+            padding: const EdgeInsets.symmetric(
+              vertical: 5,
+              horizontal: 10,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile Picture outside of the comment box
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(
+                    "http://172.20.10.4/uploads/${comment['profilepic']}",
                   ),
-                ],
-              ),
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  // Profile Picture
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(
-                        "http://192.168.65.1/uploads/${comment['profilepic']}"), // Updated to use fetched profilePic
+                  onBackgroundImageError: (_, __) => const Icon(Icons.person),
+                ),
+                const SizedBox(width: 10),
+                // Comment box with dynamic width based on content
+                Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7, // Limiting the max width
                   ),
-                  const SizedBox(width: 10),
-                  // Comment details
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Username
-                        Text(
-                          comment['username'] ?? 'Anonymous',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Username
+                      Text(
+                        comment['username'] ?? 'Anonymous',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
-                        const SizedBox(height: 5),
-                        // Comment content
-                        Text(
-                          comment['content'] ?? 'No comment content',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
+                      ),
+                      const SizedBox(height: 5),
+                      // Comment content
+                      Text(
+                        comment['content'] ?? 'No comment content',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

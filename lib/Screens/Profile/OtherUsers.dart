@@ -86,7 +86,7 @@ class _OtherusersState extends State<Otherusers> {
                 CircleAvatar(
                   backgroundImage: userDetails?['profilepic'] != null
                       ? NetworkImage(
-                      'http://192.168.65.1/uploads/${userDetails?['profilepic']}')
+                      'http://172.20.10.4/uploads/${userDetails?['profilepic']}')
                       : const AssetImage('assets/default_profile_pic.png') as ImageProvider,
                   radius: 50,
                 ),
@@ -143,16 +143,10 @@ class _OtherusersState extends State<Otherusers> {
                     if (userDetails?['isFollowed'] == 'yes') {
                       // Unfollow functionality
                     } else {
-                      final int userId = int.tryParse(userDetails?['userId'].toString() ?? '') ?? 0;
-
-                      if (userId > 0) {
-                        await UserClass().addFollow(userId);
-                        setState(() {
-                          userDetails?['isFollowed'] = 'yes';
-                        });
-                      } else {
-                        print("Invalid userId: ${userDetails?['userId']}");
-                      }
+                      await UserClass().addFollow(userDetails?['userId']);
+                      setState(() {
+                        userDetails?['isFollowed'] = 'yes';
+                      });
                     }
                   },
                   style: ElevatedButton.styleFrom(

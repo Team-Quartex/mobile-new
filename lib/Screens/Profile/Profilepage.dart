@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trova/Screens/Profile/EditProfile.dart';
 import 'package:trova/Screens/Profile/OrderHistory.dart';
 import 'package:trova/class/UserPostClass.dart';
+import 'package:trova/class/image_location.dart';
 import 'package:trova/class/user_class.dart';
 import 'package:trova/widget/post_card.dart';
 import 'package:get_it/get_it.dart';
@@ -66,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       CircleAvatar(
                         backgroundImage: userClass.profilepic != null
                             ? NetworkImage(
-                                'http://192.168.0.102/uploads/${userClass.profilepic}')
+                                ImageLocation().imageUrl(userClass.profilepic.toString()))
                             : const AssetImage(
                                 'assets/default_profile_pic.png'),
                         radius: 50,

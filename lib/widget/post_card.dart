@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 import 'package:trova/Screens/home/HomeContent/Comment.dart';
 import 'package:trova/api_service.dart';
+import 'package:trova/class/image_location.dart';
 import 'package:trova/class/post_class.dart';
 import 'package:trova/class/user_class.dart';
 import 'package:trova/widget/post_description.dart';
@@ -20,6 +21,7 @@ class PostCard extends StatefulWidget {
     required this.userId,
     required this.profilePic,
   });
+
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -119,7 +121,7 @@ class _PostCardState extends State<PostCard> {
                         onTap: () => _navigateToOtherUsers(context),
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              "http://192.168.65.1/uploads/${widget.post['profilePic']}"),
+                              ImageLocation().imageUrl(widget.post['profilePic'])),
                           radius: 25,
                         ),
                       ),
@@ -196,7 +198,7 @@ class _PostCardState extends State<PostCard> {
                         return ZoomOverlay(
                           modalBarrierColor: Colors.black12,
                           child: Image.network(
-                            "http://192.168.65.1:8000/uploads/${widget.post['images'][index]}",
+                            ImageLocation().imageUrl(widget.post['images'][index]),
                             errorBuilder: (context, error, stackTrace) {
                               return const Icon(Icons.error);
                             },
@@ -237,7 +239,7 @@ class _PostCardState extends State<PostCard> {
                       ),
                       const SizedBox(width: 5),
                       Text('$commentCount Comments',
-                          style: const TextStyle(color: Colors.grey)),
+                          style: const TextStyle(color: Colors.grey),),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.share,
@@ -263,7 +265,7 @@ class _PostCardState extends State<PostCard> {
                   CircleAvatar(
                     radius: 20,
                     backgroundImage: NetworkImage(
-                        "http://192.168.65.1/uploads/${widget.profilePic}"),
+                        ImageLocation().imageUrl(widget.profilePic)),
                   ),
                   const SizedBox(width: 10),
                   Expanded(

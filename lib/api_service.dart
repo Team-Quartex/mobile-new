@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  String baseUrl = "http://192.168.65.1/api";
+  String baseUrl = "http://172.20.10.4/api";
 
   ApiService();
   String? token;
@@ -96,7 +96,6 @@ class ApiService {
         ''; // Return the token or an empty string if not found
   }
 
-  // Fetch user details using their userId
   Future<Map<String, dynamic>?> fetchUserDetails(int userId) async {
     print("Fetching user details for userId: $userId");
 

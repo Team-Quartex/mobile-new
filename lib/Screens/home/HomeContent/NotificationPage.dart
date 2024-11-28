@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trova/class/Notification_Class.dart';
 import 'package:trova/widget/NotificationWidget.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({Key? key}) : super(key: key);
@@ -12,6 +14,7 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   late NotificationClass _notificationClass;
   late Future<List<Map<String, dynamic>>> _notifications;
+  Map<int, Map<String, String>> _userDetails = {};
 
   @override
   void initState() {
@@ -20,18 +23,50 @@ class _NotificationPageState extends State<NotificationPage> {
     _notifications = _notificationClass.getNotifications();
   }
 
+  Future<void> fetchUserDetails(int userId) async {
+    if (!_userDetails.containsKey(userId)) {
+      final response = await http.get(
+        Uri.parse("http://172.20.10.4/userDetails?userId=$userId"),
+      );
+
+      if (response.statusCode == 200) {
+        final userData = json.decode(response.body);
+        _userDetails[userId] = {
+          'username': userData['username'],
+          'profilepic': userData['profilepic'],
+        };
+        setState(() {});
+      } else {
+      }
+    }
+  }
+
   void _markAsRead(int notifyId) async {
-    final success = await _notificationClass.markAsRead(notifyId);
-    if (success) {
+    final response = await http.post(
+      Uri.parse("http://172.20.10.4/viewnotification"),
+      body: json.encode({
+        'notifyid': notifyId,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
       setState(() {
         _notifications = _notificationClass.getNotifications();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to mark notification as read')),
+        SnackBar(content: Text('Error: ${response.body}')),
       );
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +87,20 @@ class _NotificationPageState extends State<NotificationPage> {
             final notifications = snapshot.data!;
             print("Notifications loaded: $notifications");
 
+            for (var notification in notifications) {
+              fetchUserDetails(notification['userfrom']);
+            }
+
             return ListView.builder(
               itemCount: notifications.length,
               itemBuilder: (context, index) {
                 final notification = notifications[index];
+                final userFromId = notification['userfrom'];
+                final userDetails = _userDetails[userFromId];
+
                 return NotificationWidget(
                   notification: notification,
+                  userDetails: userDetails,
                   onView: () => _markAsRead(notification['notifyid']),
                 );
               },
