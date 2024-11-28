@@ -42,7 +42,7 @@ dependencies:
   zoom_pinch_overlay: ^1.4.3
   flutter_rating_stars: ^1.1.0
   intl: ^0.18.0
-  file_picker: ^8.1.4
+  #file_picker: ^8.1.4
   timeago: ^3.1.0
 
 dev_dependencies:

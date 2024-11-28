@@ -15,10 +15,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final bool _isLoading = false;
-  final bool _obscureText = true;
-  String? _errorMessage;
-  final bool _showError = false;
+  bool _isLoading = false; // Corrected to be mutable
+  String _errorMessage = ''; // Error message to display
   ApiService? _apiService;
 
   @override
@@ -101,32 +99,25 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.05),
+                  SizedBox(height: screenHeight * 0.03),
                   if (_isLoading)
                     const Center(
                       child: CircularProgressIndicator(
                         color: Color(0xFF238688),
                       ),
                     ),
-                  SizedBox(height: _isLoading ? screenHeight * 0.02 : 0),
-                  AnimatedOpacity(
-                    opacity: _errorMessage != null ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 500),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          _errorMessage ?? '',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: screenWidth * 0.04,
-                            fontWeight: FontWeight.normal,
-                          ),
+                  if (_errorMessage.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(bottom: screenHeight * 0.02),
+                      child: Text(
+                        _errorMessage,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: screenWidth * 0.04,
                         ),
                       ),
                     ),
-                  ),
+                  SizedBox(height: _isLoading ? screenHeight * 0.02 : 0),
                   Center(
                     child: ElevatedButton(
                       onPressed: _login,
@@ -199,15 +190,34 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() async {
-    if (await _apiService!
-        .userLogin(_usernameController.text, _passwordController.text)) {
-      GetIt.instance.registerSingleton<UserClass>(UserClass());
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
-    } else {
-      print('fail');
+    setState(() {
+      _isLoading = true;
+      _errorMessage = ''; // Clear previous error message
+    });
+
+    try {
+      final success = await _apiService!
+          .userLogin(_usernameController.text, _passwordController.text);
+
+      if (success) {
+        GetIt.instance.registerSingleton<UserClass>(UserClass());
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        setState(() {
+          _errorMessage = 'Invalid username or password';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'An error occurred. Please try again later.';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 }

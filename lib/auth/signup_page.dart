@@ -59,11 +59,21 @@ class _SignupPageState extends State<SignupPage> {
             MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         } else {
-          throw Exception('Failed to sign up');
+          // Add error handling for non-200 response
+          final errorMessage = json.decode(response.body)['message'] ?? 'Failed to sign up';
+          throw Exception(errorMessage);
         }
       } catch (e) {
+        String errorMessage = 'An unknown error occurred. Please try again later.';
+        if (e is http.ClientException) {
+          errorMessage = 'Network error. Please check your connection.';
+        } else if (e is FormatException) {
+          errorMessage = 'Invalid data format received.';
+        } else if (e is Exception) {
+          errorMessage = e.toString();
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('Error: $errorMessage')),
         );
       }
     }
@@ -287,14 +297,24 @@ class _SignupPageState extends State<SignupPage> {
 
   void _register() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (await _apiService!.userRegister(
+      try {
+        bool isRegistered = await _apiService!.userRegister(
           _usernameController.text,
           _nameController.text,
           _emailController.text,
-          _passwordController.text)) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          _passwordController.text,
+        );
+        if (isRegistered) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage()),
+          );
+        } else {
+          throw Exception('Username already exists. Please try again.');
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
         );
       }
     }
