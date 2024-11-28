@@ -86,22 +86,12 @@ class _NotificationPageState extends State<NotificationPage> {
           } else {
             final notifications = snapshot.data!;
             print("Notifications loaded: $notifications");
-
-            for (var notification in notifications) {
-              fetchUserDetails(notification['userfrom']);
-            }
-
             return ListView.builder(
               itemCount: notifications.length,
               itemBuilder: (context, index) {
                 final notification = notifications[index];
-                final userFromId = notification['userfrom'];
-                final userDetails = _userDetails[userFromId];
-
                 return NotificationWidget(
                   notification: notification,
-                  userDetails: userDetails,
-                  onView: () => _markAsRead(notification['notifyid']),
                 );
               },
             );

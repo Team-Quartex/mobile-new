@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:trova/class/image_location.dart';
 
 class NotificationWidget extends StatelessWidget {
   final Map<String, dynamic> notification;
-  final Map<String, String>? userDetails;
-  final VoidCallback? onView;
 
   const NotificationWidget({
     Key? key,
     required this.notification,
-    this.onView,
-    this.userDetails,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final bool isViewed = notification['isView'] == 'true';
+    bool isView = true;
+    String notify = "";
     final notifyType = notification['notifytype'];
     final notifiedTime = notification['notifiedtime'];
 
@@ -27,37 +25,49 @@ class NotificationWidget extends StatelessWidget {
       timeAgo = notifiedTime;
     }
 
-    final profilePic = userDetails?['profilepic'];
+    if (notification['isView'] == "no") {
+      isView = false;
+    }
+
+    final profilePic = notification['profilepic'];
+
+    switch (notification['notifytype']) {
+      case "like":
+        notify = "User like your Post";
+        break;
+      case "comment":
+        notify = "User comment your Post";
+        break;
+      case "follow":
+        notify = "User Start follow you";
+        break;
+      case "share":
+        notify = "User share your post";
+        break;
+      default:
+        notify = "";
+        break;
+    }
 
     return ListTile(
-      leading: profilePic != null
-          ? CircleAvatar(
-        backgroundImage: NetworkImage(profilePic),
-      )
-          : const CircleAvatar(
-        child: Icon(Icons.person),
+      leading: CircleAvatar(
+        radius: 40,
+        backgroundImage: NetworkImage(ImageLocation().imageUrl(profilePic)),
       ),
-      title: Text(userDetails?['username'] ?? 'Unknown'),
+      title: Text(notification['name']),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(notifyType),
-          Text(timeAgo),
+          Text(notify),
+          Text(timeAgo,style: TextStyle(fontSize: 10),),
         ],
       ),
-      trailing: !isViewed
-          ? ElevatedButton(
-        onPressed: onView,
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white, backgroundColor: Color(0xFF238688),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        ),
-        child: const Text("Mark as Read"),
-      )
-          : null,
+      trailing: isView
+          ? const SizedBox.shrink()
+          : const CircleAvatar(
+              foregroundColor: Colors.green,
+              radius: 10,
+            ),
     );
   }
 }

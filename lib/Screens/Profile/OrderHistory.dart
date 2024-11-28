@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trova/class/image_location.dart';
 import '../../class/product_class.dart';
 
 class OrderHistory extends StatefulWidget {
@@ -74,7 +75,7 @@ class OrderCard extends StatelessWidget {
               // Item Image
               CircleAvatar(
                 radius: 30,
-                backgroundImage: NetworkImage(order['imageUrl'] ?? ''),
+                backgroundImage: NetworkImage(ImageLocation().imageUrl(order['productImage'])),
                 backgroundColor: Colors.grey[200],
               ),
               const SizedBox(width: 16),
@@ -85,7 +86,7 @@ class OrderCard extends StatelessWidget {
                   children: [
                     // Item Name
                     Text(
-                      order['itemName'] ?? 'Item Name',
+                      order['productName'],
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -94,14 +95,14 @@ class OrderCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     // Price and Date
                     Text(
-                      'LKR ${order['price'] ?? '0.00'}',
+                      'LKR ${order['tot']}',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Date: ${order['date'] ?? 'N/A'}',
+                      'Date: ${order['startDate']}',
                       style: const TextStyle(
                         color: Colors.grey,
                       ),
@@ -114,19 +115,19 @@ class OrderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'Qty: ${order['quantity'] ?? '0'}',
+                    'Qty: ${order['qty']}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    order['time'] ?? 'Time N/A',
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontSize: 12,
-                    ),
-                  ),
+                  // const SizedBox(height: 4),
+                  // Text(
+                  //   order['time'] ?? 'Time N/A',
+                  //   style: const TextStyle(
+                  //     color: Colors.blue,
+                  //     fontSize: 12,
+                  //   ),
+                  // ),
                 ],
               ),
             ],

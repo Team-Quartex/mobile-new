@@ -134,6 +134,7 @@ class ProductClass extends ApiService {
 
   Future<List<Map<String, dynamic>>> fetchOrderHistory(int userId) async {
     try {
+      print(authToken);
       final response = await http.get(
         Uri.parse("$baseUrl/reservation/userreservation"),
         headers: {
@@ -143,6 +144,7 @@ class ProductClass extends ApiService {
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        print(data.map((item) => item as Map<String, dynamic>).toList());
         return data.map((item) => item as Map<String, dynamic>).toList();
       } else {
         print("Error: ${response.statusCode}");
@@ -154,7 +156,8 @@ class ProductClass extends ApiService {
     }
   }
 
-  Future<bool> addReview(String productId, String reviewContent, double rating) async {
+  Future<bool> addReview(
+      String productId, String reviewContent, double rating) async {
     final response = await http.post(
       Uri.parse('https://172.20.10.4/api/reviews/add'),
       headers: <String, String>{
