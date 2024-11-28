@@ -122,32 +122,6 @@ class PostClass extends ApiService {
     }
   }
 
-  Future<void> addSavedPost(int postId) async {
-    final url = Uri.parse("$baseUrl/addsavedposts");
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"postId": postId}),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to save post: ${response.body}');
-    }
-  }
-
-  Future<void> removeSavedPost(int postId) async {
-    final url = Uri.parse("$baseUrl/removesavedpost");
-    final response = await http.delete(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"postId": postId}),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to remove saved post: ${response.body}');
-    }
-  }
-
   // Upload Images
   Future<List<String>> uploadImages(List<File> files) async {
     try {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:trova/Screens/Marketplace/product_view.dart';
 import 'package:trova/class/image_location.dart';
 import 'package:trova/class/product_class.dart';
@@ -184,6 +185,17 @@ class ItemCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4.0),
+                  // Star rating added here
+                  RatingStars(
+                    value: product['avgReviewRate'] != null
+                        ? double.parse(product['avgReviewRate'].toString())
+                        : 2.5, // Default rating
+                    valueLabelVisibility: false,
+                    starColor: const Color.fromARGB(255, 250, 166, 18),
+                    starOffColor: const Color.fromARGB(176, 0, 0, 0),
+                    starSize: 15, // Adjust star size as needed
+                  ),
+                  const SizedBox(height: 4.0),
                   Text(
                     product['description'],
                     style: const TextStyle(fontSize: 12),
@@ -205,3 +217,4 @@ class ItemCard extends StatelessWidget {
     );
   }
 }
+

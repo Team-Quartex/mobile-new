@@ -24,14 +24,13 @@ class _CommentPageState extends State<CommentPage> {
 
   Future<void> fetchComments(int postId) async {
     try {
-      // Fetch comments for the post
       final response = await http.get(
         Uri.parse("http://172.20.10.4/api/comments?postId=$postId"),
       );
 
       if (response.statusCode == 200) {
         setState(() {
-          comments = json.decode(response.body); // Directly use the returned comments data
+          comments = json.decode(response.body);
           isLoading = false;
         });
       } else {
@@ -68,7 +67,6 @@ class _CommentPageState extends State<CommentPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Profile Picture outside of the comment box
                 CircleAvatar(
                   radius: 25,
                   backgroundImage: NetworkImage(
@@ -77,10 +75,9 @@ class _CommentPageState extends State<CommentPage> {
                   onBackgroundImageError: (_, __) => const Icon(Icons.person),
                 ),
                 const SizedBox(width: 10),
-                // Comment box with dynamic width based on content
                 Container(
                   constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.7, // Limiting the max width
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,

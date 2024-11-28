@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     setState(() {
       _isLoading = true;
-      _errorMessage = ''; // Clear previous error message
+      _errorMessage = '';
     });
 
     try {

@@ -77,10 +77,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           GestureDetector(
-            // onTap: () {
-            //   Navigator.push(context,
-            //       MaterialPageRoute(builder: (context) => const AddPost()));
-            // },
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AddPost()));
+            },
             child: Container(
               width: _deviceHeight! * 0.07,
               height: _deviceHeight! * 0.07,

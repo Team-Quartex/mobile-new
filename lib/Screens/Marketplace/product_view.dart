@@ -4,6 +4,8 @@ import 'package:trova/class/image_location.dart';
 import 'package:trova/class/product_class.dart';
 import 'package:trova/widget/bottom_bar.dart';
 
+import '../../widget/AddReviewBottomBar.dart';
+
 class ProductView extends StatefulWidget {
   Map<String, dynamic> itemDetails;
   ProductView({super.key, required this.itemDetails});
@@ -90,7 +92,6 @@ class _ProductViewState extends State<ProductView> {
     );
   }
 
-  // Product name and review container
   Widget _productName() {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -134,32 +135,55 @@ class _ProductViewState extends State<ProductView> {
     );
   }
 
-  // Description Container
   Widget _descriptionContainer() {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: _deviceWidth! * 0.05,
       ),
       width: _deviceWidth,
-      height: _deviceHeight! * 0.3, // Adjust height as needed
+      height: _deviceHeight! * 0.3,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Description Section
             Container(
               padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
               child: Text(widget.itemDetails['description']),
             ),
 
-            // Reviews Title
             Container(
               padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.005),
-              child: const Text(
-                'Reviews',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Reviews',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_comment),  // Plus icon
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(34),
+                            topRight: Radius.circular(34),
+                          ),
+                        ),
+                        builder: (context) {
+                          return AddReviewBottomBar(
+                            productId: widget.itemDetails['productId'].toString(), // Pass the product ID
+                          );
+                        },
+                      );
+                    },
+                  ),
+
+                ],
               ),
             ),
+
 
             // Reviews Tiles
             _reviewsTiles(),
@@ -170,7 +194,6 @@ class _ProductViewState extends State<ProductView> {
     );
   }
 
-  // Bottom containe
   Widget _bottomContainer() {
     return Align(
       alignment: Alignment.bottomCenter,
@@ -196,7 +219,6 @@ class _ProductViewState extends State<ProductView> {
                       itemDetails: widget.itemDetails,
                       onReservationResult:
                           (String resultText, bool canRent, int itemLimit) {
-                        // Handle result from the bottom bar if needed
                         print(resultText);
                       },
                     );
@@ -300,7 +322,6 @@ class _ProductViewState extends State<ProductView> {
         });
   }
 
-  // Seller Details Container
   Widget _sellerDetails() {
     return Center(
       child: Column(

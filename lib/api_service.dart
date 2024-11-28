@@ -124,5 +124,84 @@ class ApiService {
     }
   }
 
+  // Add Saved Post method
+  Future<bool> addSavedPost(int postId) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/savedpost/addsavedposts"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'accessToken=$authToken',
+        },
+        body: json.encode({
+          "postId": postId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Post saved successfully');
+        return true;
+      } else {
+        print("Failed to save post: ${response.reasonPhrase}");
+        return false;
+      }
+    } catch (e) {
+      print("Error while saving post: $e");
+      return false;
+    }
+  }
+
+  // Remove Saved Post method
+  Future<bool> removeSavedPost(int postId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/savedpost/removesavedpost"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'accessToken=$authToken',
+        },
+        body: json.encode({
+          "postId": postId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Post removed successfully');
+        return true;
+      } else {
+        print("Failed to remove post: ${response.reasonPhrase}");
+        return false;
+      }
+    } catch (e) {
+      print("Error while removing post: $e");
+      return false;
+    }
+  }
+
+
+  // Function to fetch saved posts to check if a specific post is saved
+  Future<List<dynamic>> fetchSavedPosts(int postId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/likes?postId=$postId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'accessToken=$authToken',  // Include the token in the header
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Assuming the response body contains an array of saved post IDs
+        return json.decode(response.body);  // Example: [1, 2, 3]
+      } else {
+        throw Exception('Failed to fetch saved posts');
+      }
+    } catch (e) {
+      print("Error fetching saved posts: $e");
+      throw Exception('Error fetching saved posts');
+    }
+  }
+
+
 
 }

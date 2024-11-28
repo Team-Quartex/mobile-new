@@ -10,6 +10,7 @@ import 'package:trova/widget/post_description.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 import '../Screens/Profile/OtherUsers.dart';
 
+
 class PostCard extends StatefulWidget {
   final Map<dynamic, dynamic> post;
   final int userId;
@@ -46,7 +47,23 @@ class _PostCardState extends State<PostCard> {
     commentCount = widget.post['comments'];
     isFollow = (widget.post['isFollowed'] == 'no' && widget.post['verify'] == 'yes') && widget.post['userId'] != widget.userId;
     _apiService = GetIt.instance.get<ApiService>();
+    _checkIfPostIsSaved();
   }
+
+  Future<void> _checkIfPostIsSaved() async {
+    try {
+      final postId = widget.post['postId'];
+
+      final savedPosts = await _apiService?.fetchSavedPosts(postId);
+
+      setState(() {
+        isSaved = savedPosts!.contains(postId);
+      });
+    } catch (e) {
+      print("Error checking if post is saved: $e");
+    }
+  }
+
 
   void _toggleLike() {
     setState(() {
@@ -72,27 +89,28 @@ class _PostCardState extends State<PostCard> {
 
   void _toggleSave() async {
     try {
-      print('Toggling save for post ID: ${widget.post['postId']}');
       setState(() {
         isSaved = !isSaved;
       });
 
       if (isSaved) {
-        print('Calling addSavedPost...');
-        await _postClass!.addSavedPost(widget.post['postId']);
-        print('Post saved successfully.');
+        await _apiService?.addSavedPost(widget.post['postId']);
       } else {
-        print('Calling removeSavedPost...');
-        await _postClass!.removeSavedPost(widget.post['postId']);
-        print('Post unsaved successfully.');
+        await _apiService?.removeSavedPost(widget.post['postId']);
       }
     } catch (e) {
       print("Error while saving/removing post: $e");
+
       setState(() {
-        isSaved = !isSaved; // Revert state if API call fails
+        isSaved = !isSaved;
       });
     }
   }
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -173,9 +191,7 @@ class _PostCardState extends State<PostCard> {
                       const Spacer(),
                       IconButton(
                         icon: Icon(
-                          isSaved
-                              ? Icons.bookmark
-                              : Icons.bookmark_border_rounded,
+                          isSaved ? Icons.bookmark : Icons.bookmark_border_rounded,
                           size: 20,
                         ),
                         onPressed: _toggleSave,
@@ -232,7 +248,7 @@ class _PostCardState extends State<PostCard> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CommentPage(postId: postId),  // Pass postId
+                              builder: (context) => CommentPage(postId: postId),
                             ),
                           );
                         },
@@ -287,19 +303,29 @@ class _PostCardState extends State<PostCard> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: IconButton(
-                      icon:
-                      const Icon(Icons.send, color: Colors.white, size: 18),
-                      onPressed: () {
+                      icon: const Icon(Icons.send, color: Colors.white, size: 18),
+                      onPressed: () async {
                         if (_commentController.text.isNotEmpty) {
-                          PostClass().addComment(
-                              widget.post['postId'], _commentController.text);
-                          setState(() {
-                            commentCount++;
-                          });
+                          String commentContent = _commentController.text;
+                          try {
+                            await _postClass.addComment(widget.post['postId'], commentContent);
+
+                            setState(() {
+                              commentCount++;
+                            });
+
+                            _commentController.clear();
+                            print("Comment added successfully.");
+                          } catch (e) {
+                            print("Error adding comment: $e");
+                          }
+                        } else {
+                          print("Comment content is empty.");
                         }
                       },
                     ),
-                  ),
+                  )
+
                 ],
               ),
             ),
@@ -317,4 +343,5 @@ class _PostCardState extends State<PostCard> {
       ),
     );
   }
+
 }

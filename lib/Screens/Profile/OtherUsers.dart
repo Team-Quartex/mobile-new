@@ -135,7 +135,6 @@ class _OtherusersState extends State<Otherusers> {
             ),
             const SizedBox(height: 16),
 
-            // Conditional Follow Button: Only display if 'verify' == 'yes'
             if (userDetails?['verify'] == 'yes')
               Center(
                 child: ElevatedButton(
