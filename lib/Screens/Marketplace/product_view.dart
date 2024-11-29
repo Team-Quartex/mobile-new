@@ -30,6 +30,7 @@ class _ProductViewState extends State<ProductView> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.itemDetails);
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -95,7 +96,6 @@ class _ProductViewState extends State<ProductView> {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: _deviceWidth! * 0.05, vertical: _deviceHeight! * 0.01),
-      height: _deviceHeight! * 0.15,
       width: _deviceWidth,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,6 +107,8 @@ class _ProductViewState extends State<ProductView> {
           ),
           Text(
             widget.itemDetails['name'],
+            maxLines: 2,
+            overflow: TextOverflow.fade,
             style: TextStyle(
                 fontSize: _deviceHeight! * 0.045, fontWeight: FontWeight.bold),
           ),
@@ -117,7 +119,7 @@ class _ProductViewState extends State<ProductView> {
                 value: widget.itemDetails['avgReviewRate'] != null
                     ? double.parse(
                         widget.itemDetails['avgReviewRate'].toString())
-                    : 2.5,
+                    : 0,
                 valueLabelVisibility: false,
                 starColor: const Color.fromARGB(255, 250, 166, 18),
                 starOffColor: const Color.fromARGB(176, 0, 0, 0),
@@ -353,16 +355,19 @@ class _ProductViewState extends State<ProductView> {
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(
-                          ImageLocation().imageUrl(widget.itemDetails['profile'].toString())),
+                          ImageLocation().imageUrl(widget.itemDetails['profile'])),
                       radius: _deviceWidth! * 0.1,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.itemDetails['sellername'],
-                          style: const TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                        Container(
+                          width: _deviceWidth!*0.6,
+                          child: Text(
+                            widget.itemDetails['sellername'],
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),overflow: TextOverflow.clip,
+                          ),
                         ),
                         const Text(
                           "Verify Seller",

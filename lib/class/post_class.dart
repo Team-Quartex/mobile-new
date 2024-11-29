@@ -35,7 +35,7 @@ class PostClass extends ApiService {
     }
   }
 
-  Future<void> likePosts(int id) async {
+  Future<void> likePosts(int id,int postUser) async {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/likes/add"),
@@ -45,6 +45,7 @@ class PostClass extends ApiService {
         },
         body: json.encode({
           "postId": id,
+          "postuser":postUser,
         }),
       );
       if (response.statusCode == 200) {
@@ -56,7 +57,7 @@ class PostClass extends ApiService {
     }
   }
 
-  Future<void> removeLike(int id) async {
+  Future<void> removeLike(int id,int postUser) async {
     print("HI");
     try {
       final response = await http.post(
@@ -67,10 +68,11 @@ class PostClass extends ApiService {
         },
         body: json.encode({
           "postId": id,
+          "postuser":postUser,
         }),
       );
       if (response.statusCode == 200) {
-        print("object");
+        print("object wow");
       } else {
         print("Error: ${response.statusCode}");
       }

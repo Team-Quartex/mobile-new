@@ -158,21 +158,26 @@ class ProductClass extends ApiService {
 
   Future<bool> addReview(
       String productId, String reviewContent, double rating) async {
+    print("Attempting to add a review...");
+
     final response = await http.post(
       Uri.parse("$baseUrl/reviews/add"),
       headers: <String, String>{
         'Content-Type': 'application/json',
+        'Cookie': 'accessToken=$authToken', // Add this line if authentication is required
       },
       body: jsonEncode({
-        "productId": productId,
-        "reviewContent": reviewContent,
-        "rating": rating,
+        "proId": productId,
+        "content": reviewContent,
+        "count": rating,
       }),
     );
 
     if (response.statusCode == 200) {
+      print("Review successfully added!");
       return true;
     } else {
+      print("Failed to add review: ${response.body}");
       throw Exception('Failed to add review');
     }
   }

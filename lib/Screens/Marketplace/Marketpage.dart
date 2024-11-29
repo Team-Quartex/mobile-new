@@ -189,7 +189,7 @@ class ItemCard extends StatelessWidget {
                   RatingStars(
                     value: product['avgReviewRate'] != null
                         ? double.parse(product['avgReviewRate'].toString())
-                        : 2.5, // Default rating
+                        : 0, // Default rating
                     valueLabelVisibility: false,
                     starColor: const Color.fromARGB(255, 250, 166, 18),
                     starOffColor: const Color.fromARGB(176, 0, 0, 0),

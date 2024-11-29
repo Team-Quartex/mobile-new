@@ -56,10 +56,10 @@ class _PostCardState extends State<PostCard> {
       isLiked = !isLiked;
       if (isLiked) {
         likeCount++;
-        _postClass.likePosts(widget.post['postId']);
+        _postClass.likePosts(widget.post['postId'],widget.post['userId']);
       } else {
         likeCount--;
-        _postClass.removeLike(widget.post['postId']);
+        _postClass.removeLike(widget.post['postId'],widget.post['userId']);
       }
     });
   }

@@ -13,33 +13,34 @@ class AddReviewBottomBar extends StatefulWidget {
 }
 
 class _AddReviewBottomBarState extends State<AddReviewBottomBar> {
-  double _rating = 2.5;  // Default rating
+  double _rating = 2.5; // Default rating
   TextEditingController _reviewController = TextEditingController();
+  ProductClass _productClass = ProductClass();
 
-  Future<void> _submitReview() async {
-    final reviewContent = _reviewController.text.trim();
-    if (reviewContent.isNotEmpty) {
-      try {
-        final response = await ProductClass().addReview(
-          widget.productId,
-          reviewContent,
-          _rating,
-        );
+  // Future<void> _submitReview() async {
+  //   final reviewContent = _reviewController.text.trim();
+  //   if (reviewContent.isNotEmpty) {
+  //     try {
+  //       final response = await ProductClass().addReview(
+  //         widget.productId,
+  //         reviewContent,
+  //         _rating,
+  //       );
 
-        if (response != null) {
-          Navigator.pop(context);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to add review')),
-          );
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
-    }
-  }
+  //       if (response != null) {
+  //         Navigator.pop(context);
+  //       } else {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text('Failed to add review')),
+  //         );
+  //       }
+  //     } catch (e) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Error: $e')),
+  //       );
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +60,6 @@ class _AddReviewBottomBarState extends State<AddReviewBottomBar> {
             ),
           ),
           SizedBox(height: 20),
-
           RatingStars(
             value: _rating,
             onValueChanged: (value) {
@@ -71,7 +71,6 @@ class _AddReviewBottomBarState extends State<AddReviewBottomBar> {
             starOffColor: const Color.fromARGB(176, 0, 0, 0),
           ),
           SizedBox(height: 20),
-
           TextField(
             controller: _reviewController,
             decoration: InputDecoration(
@@ -85,7 +84,6 @@ class _AddReviewBottomBarState extends State<AddReviewBottomBar> {
             maxLines: 4,
           ),
           SizedBox(height: 20),
-
           Center(
             child: ElevatedButton(
               onPressed: _submitReview,
@@ -111,5 +109,18 @@ class _AddReviewBottomBarState extends State<AddReviewBottomBar> {
         ],
       ),
     );
+  }
+
+  void _submitReview() async {
+    final reviewContent = _reviewController.text.trim();
+    if (reviewContent.isNotEmpty) {
+      bool result = await _productClass.addReview(
+          widget.productId, reviewContent, _rating);
+      if (result) {
+        Navigator.pop(context, true);
+      } else {
+        print("error");
+      }
+    }
   }
 }

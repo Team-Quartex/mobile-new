@@ -50,16 +50,26 @@ class NotificationWidget extends StatelessWidget {
     }
 
     return ListTile(
-      leading: CircleAvatar(
-        radius: 40,
-        backgroundImage: NetworkImage(ImageLocation().imageUrl(profilePic)),
+      leading: Container(
+        width: 80.0, // width and height should be equal to 2 times the radius
+        height: 80.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            fit: BoxFit.contain,
+            image: NetworkImage(ImageLocation().imageUrl(profilePic)),
+          ),
+        ),
       ),
       title: Text(notification['name']),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(notify),
-          Text(timeAgo,style: TextStyle(fontSize: 10),),
+          Text(
+            timeAgo,
+            style: TextStyle(fontSize: 10),
+          ),
         ],
       ),
       trailing: isView
