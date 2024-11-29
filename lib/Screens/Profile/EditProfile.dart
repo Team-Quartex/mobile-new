@@ -217,7 +217,9 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   const SizedBox(height: 1),
                   TextButton(
-                    onPressed: _logout,
+                    onPressed: (){
+                      Navigator.push( context, MaterialPageRoute(builder: (context) => LoginPage()));
+                    },
                     child: const Text(
                       'Logout',
                       style: TextStyle(
