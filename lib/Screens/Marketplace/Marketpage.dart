@@ -63,10 +63,10 @@ class _MarketPageState extends State<MarketPage> {
         elevation: 0,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
-        toolbarHeight: 80,
+        toolbarHeight: 85,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(9.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

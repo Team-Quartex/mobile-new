@@ -42,39 +42,48 @@ class _LandingpageState extends State<HomeContent> {
             profilePic = userClass.profilepic;
             return Scaffold(
               appBar: AppBar(
-                toolbarHeight: 80,
+                toolbarHeight: 75,
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CircleAvatar(
                           backgroundImage: userClass.profilepic != null
-                              ? NetworkImage(
-                                  ImageLocation().imageUrl(userClass.profilepic.toString()))
+                              ? NetworkImage(ImageLocation().imageUrl(
+                              userClass.profilepic.toString()))
                               : const AssetImage(
-                                  'assets/default_profile_pic.png'),
+                              'assets/default_profile_pic.png'),
                           radius: 25,
                         ),
                         const SizedBox(width: 10),
-                        const Text('Welcome',
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Welcome',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              userClass.name.toString(),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                    Text(userClass.name.toString(),
-                        style: const TextStyle(
-                            fontSize: 18, color: Color.fromARGB(255, 0, 0, 0))),
                   ],
+
+
                 ),
                 actions: [
-                  // IconButton(
-                  //   icon: Icon(Icons.shopping_cart),
-                  //   onPressed: () {
-                  //     Navigator.push(context,
-                  //         MaterialPageRoute(builder: (context) => Cart()));
-                  //   },
-                  // ),
                   IconButton(
                     icon: const Icon(Icons.notifications),
                     onPressed: () {
@@ -142,7 +151,8 @@ class _LandingpageState extends State<HomeContent> {
                     children: [
                       CircleAvatar(
                         backgroundImage: NetworkImage(
-                            ImageLocation().imageUrl(post['profilePic'].toString())),
+                            ImageLocation().imageUrl(
+                                post['profilePic'].toString())),
                         radius: 25,
                       ),
                       const SizedBox(width: 10),
@@ -198,20 +208,21 @@ class _LandingpageState extends State<HomeContent> {
                 post['images'].length == 0
                     ? Container()
                     : SizedBox(
-                        height: 250,
-                        child: PageView.builder(
-                          padEnds: false,
-                          itemCount: post['images'].length,
-                          itemBuilder: (context, index) {
-                            return Image.network(
-                              ImageLocation().imageUrl(post['images'][index].toString()),
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.error);
-                              },
-                            );
-                          },
-                        ),
-                      ),
+                  height: 250,
+                  child: PageView.builder(
+                    padEnds: false,
+                    itemCount: post['images'].length,
+                    itemBuilder: (context, index) {
+                      return Image.network(
+                        ImageLocation().imageUrl(
+                            post['images'][index].toString()),
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.error);
+                        },
+                      );
+                    },
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10.0, vertical: 5.0),
@@ -256,7 +267,7 @@ class _LandingpageState extends State<HomeContent> {
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -288,7 +299,7 @@ class _LandingpageState extends State<HomeContent> {
                     ),
                     child: IconButton(
                       icon:
-                          const Icon(Icons.send, color: Colors.white, size: 18),
+                      const Icon(Icons.send, color: Colors.white, size: 18),
                       onPressed: () {},
                     ),
                   ),
@@ -300,172 +311,4 @@ class _LandingpageState extends State<HomeContent> {
       ),
     );
   }
-
-  // Widget buildPostCard(Post post) {
-  //   return Card(
-  //     margin: EdgeInsets.all(10),
-  //     color: Colors.white,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(20),
-  //     ),
-  //     child: Column(
-  //       children: [
-  //         Card(
-  //           margin: EdgeInsets.all(8),
-  //           color: Color(0xFFE0EEEE),
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(15),
-  //           ),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Padding(
-  //                 padding: const EdgeInsets.all(10.0),
-  //                 child: Row(
-  //                   children: [
-  //                     CircleAvatar(
-  //                       backgroundImage: AssetImage(post.userProfileImage),
-  //                       radius: 25,
-  //                     ),
-  //                     SizedBox(width: 10),
-  //                     Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Row(
-  //                           children: [
-  //                             Text(post.userName,
-  //                                 style:
-  //                                     TextStyle(fontWeight: FontWeight.bold)),
-  //                             SizedBox(width: 10),
-  //                             TextButton(
-  //                               onPressed: () {},
-  //                               style: TextButton.styleFrom(
-  //                                 backgroundColor: Colors.black,
-  //                                 shape: RoundedRectangleBorder(
-  //                                   borderRadius: BorderRadius.circular(20),
-  //                                 ),
-  //                                 padding: EdgeInsets.symmetric(
-  //                                     horizontal: 12, vertical: 4),
-  //                               ),
-  //                               child: Text(
-  //                                 'Follow',
-  //                                 style: TextStyle(
-  //                                   color: Colors.white,
-  //                                   fontSize: 12,
-  //                                   fontWeight: FontWeight.bold,
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                         Text(post.postDate,
-  //                             style: TextStyle(color: Colors.grey)),
-  //                       ],
-  //                     ),
-  //                     Spacer(),
-  //                     IconButton(
-  //                       icon: Icon(Icons.more_vert),
-  //                       onPressed: () {},
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-  //                 child: Text(post.postContent),
-  //               ),
-  //               Container(
-  //                 height: 250,
-  //                 child: PageView.builder(
-  //                   itemCount: 1,
-  //                   itemBuilder: (context, index) {
-  //                     return Image.asset(post.postImage, fit: BoxFit.cover);
-  //                   },
-  //                 ),
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.symmetric(
-  //                     horizontal: 10.0, vertical: 5.0),
-  //                 child: Row(
-  //                   children: [
-  //                     IconButton(
-  //                       icon: Icon(Icons.favorite,
-  //                           size: 20, color: Color(0xFFFF0000)),
-  //                       onPressed: () {
-  //                         Navigator.push(context,
-  //                             MaterialPageRoute(builder: (context) => Like()));
-  //                       },
-  //                     ),
-  //                     SizedBox(width: 5),
-  //                     Text('${post.likes} Likes',
-  //                         style: TextStyle(color: Colors.grey)),
-  //                     Spacer(),
-  //                     IconButton(
-  //                       icon: Icon(Icons.comment, size: 20, color: Colors.grey),
-  //                       onPressed: () {
-  //                         Navigator.push(
-  //                             context,
-  //                             MaterialPageRoute(
-  //                                 builder: (context) => Comment()));
-  //                       },
-  //                     ),
-  //                     SizedBox(width: 5),
-  //                     Text('${post.comments} Comments',
-  //                         style: TextStyle(color: Colors.grey)),
-  //                     Spacer(),
-  //                     IconButton(
-  //                       icon: Icon(Icons.share, size: 20, color: Colors.grey),
-  //                       onPressed: () {},
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding:
-  //               const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-  //           child: Container(
-  //             decoration: BoxDecoration(
-  //               color: Colors.white,
-  //               borderRadius: BorderRadius.circular(10),
-  //             ),
-  //             child: Row(
-  //               children: [
-  //                 CircleAvatar(
-  //                   radius: 20,
-  //                   backgroundImage: AssetImage('assets/profile.jpg'),
-  //                 ),
-  //                 SizedBox(width: 10),
-  //                 Expanded(
-  //                   child: TextField(
-  //                     decoration: InputDecoration(
-  //                       hintText: 'Type a comment...',
-  //                       hintStyle: TextStyle(color: Colors.grey),
-  //                       border: InputBorder.none,
-  //                       enabledBorder: InputBorder.none,
-  //                       focusedBorder: InputBorder.none,
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 Container(
-  //                   padding: EdgeInsets.all(1),
-  //                   decoration: BoxDecoration(
-  //                     color: Colors.black,
-  //                     borderRadius: BorderRadius.circular(20),
-  //                   ),
-  //                   child: IconButton(
-  //                     icon: Icon(Icons.send, color: Colors.white, size: 18),
-  //                     onPressed: () {},
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

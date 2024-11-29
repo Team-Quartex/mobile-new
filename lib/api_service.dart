@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 class ApiService {
-  String baseUrl = "http://192.168.0.102/api";
+  String baseUrl = "http://172.20.10.4/api";
 
   ApiService();
   String? token;
@@ -179,29 +180,19 @@ class ApiService {
   }
 
 
-  // Function to fetch saved posts to check if a specific post is saved
-  Future<List<dynamic>> fetchSavedPosts(int postId) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/likes?postId=$postId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': 'accessToken=$authToken',  // Include the token in the header
-        },
-      );
+  Future<List<int>> fetchSavedPosts(int postId) async {
+    final response = await get(Uri.parse('http://172.20.10.4/api/getsavedposts?postId=$postId'));
 
-      if (response.statusCode == 200) {
-        // Assuming the response body contains an array of saved post IDs
-        return json.decode(response.body);  // Example: [1, 2, 3]
-      } else {
-        throw Exception('Failed to fetch saved posts');
-      }
-    } catch (e) {
-      print("Error fetching saved posts: $e");
-      throw Exception('Error fetching saved posts');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<int>.from(data);
+    } else {
+      throw Exception('Failed to load saved posts');
     }
   }
 
-
-
 }
+
+
+
+
