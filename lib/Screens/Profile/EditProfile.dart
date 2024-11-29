@@ -51,7 +51,7 @@ class _EditProfileState extends State<EditProfile> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://localhost:8000/api/users/update'),
+        Uri.parse('http://172.20.10.4/api/users/update'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': 'accessToken=${userClass.authToken}',
@@ -79,7 +79,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _logout() async {
     try {
       final response = await http.get(
-        Uri.parse('http://172.20.10.4:8000/api/users/logout'),
+        Uri.parse('http://172.20.10.4/api/users/logout'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': 'accessToken=${userClass.authToken}',

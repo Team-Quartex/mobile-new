@@ -54,7 +54,6 @@ class _ProductViewState extends State<ProductView> {
     ]);
   }
 
-  // Product Image
   Widget _imageView() {
     return SizedBox(
       width: _deviceWidth,

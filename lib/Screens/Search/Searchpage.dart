@@ -91,7 +91,7 @@ class _SearchPageState extends State<SearchPage> {
     _searchController.text = suggestion['name'];
     _onSearchChanged(suggestion['name']);
     _fetchSearchres(suggestion['name']);
-    suggestions.clear(); // Hide suggestions after selection
+    suggestions.clear();
   }
 
   @override

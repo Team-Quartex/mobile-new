@@ -21,7 +21,7 @@ class _AddReviewBottomBarState extends State<AddReviewBottomBar> {
     if (reviewContent.isNotEmpty) {
       try {
         final response = await ProductClass().addReview(
-          widget.productId,  // productId is now a String
+          widget.productId,
           reviewContent,
           _rating,
         );
@@ -103,7 +103,7 @@ class _AddReviewBottomBarState extends State<AddReviewBottomBar> {
                 'Submit Review',
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width * 0.05,
-                  color: Colors.white, // Set the text color to white
+                  color: Colors.white,
                 ),
               ),
             ),

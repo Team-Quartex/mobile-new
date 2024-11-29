@@ -50,20 +50,6 @@ class _PostCardState extends State<PostCard> {
     _checkIfPostIsSaved();
   }
 
-  Future<void> _checkIfPostIsSaved() async {
-    try {
-      final postId = widget.post['postId'];
-
-      final savedPosts = await _apiService?.fetchSavedPosts(postId);
-
-      setState(() {
-        isSaved = savedPosts!.contains(postId);
-      });
-    } catch (e) {
-      print("Error checking if post is saved: $e");
-    }
-  }
-
 
   void _toggleLike() {
     setState(() {
@@ -107,7 +93,19 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
+  Future<void> _checkIfPostIsSaved() async {
+    try {
+      final postId = widget.post['postId'];
 
+      final savedPosts = await _apiService?.fetchSavedPosts(postId);
+
+      setState(() {
+        isSaved = savedPosts!.contains(postId);
+      });
+    } catch (e) {
+      print("Error checking if post is saved: $e");
+    }
+  }
 
 
 
