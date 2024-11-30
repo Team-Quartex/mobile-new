@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:trova/api_service.dart';
 import 'dart:convert';
 import 'login_page.dart';
 
@@ -12,11 +14,18 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isAgreed = false;
+  ApiService? _apiService;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiService = GetIt.instance.get<ApiService>();
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -43,18 +52,28 @@ class _SignupPageState extends State<SignupPage> {
 
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Signup successful!')),
+            const SnackBar(content: Text('Signup successful!')),
           );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         } else {
-          throw Exception('Failed to sign up');
+          // Add error handling for non-200 response
+          final errorMessage = json.decode(response.body)['message'] ?? 'Failed to sign up';
+          throw Exception(errorMessage);
         }
       } catch (e) {
+        String errorMessage = 'An unknown error occurred. Please try again later.';
+        if (e is http.ClientException) {
+          errorMessage = 'Network error. Please check your connection.';
+        } else if (e is FormatException) {
+          errorMessage = 'Invalid data format received.';
+        } else if (e is Exception) {
+          errorMessage = e.toString();
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('Error: $errorMessage')),
         );
       }
     }
@@ -70,8 +89,7 @@ class _SignupPageState extends State<SignupPage> {
         children: [
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.07),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -99,7 +117,6 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _usernameController,
                         decoration: InputDecoration(
@@ -118,7 +135,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
@@ -137,7 +153,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -159,7 +174,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -182,7 +196,6 @@ class _SignupPageState extends State<SignupPage> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       Row(
                         children: [
                           Checkbox(
@@ -205,10 +218,9 @@ class _SignupPageState extends State<SignupPage> {
                         ],
                       ),
                       SizedBox(height: screenHeight * 0.04),
-
                       Center(
                         child: ElevatedButton(
-                          onPressed: _submitForm,
+                          onPressed: _register,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF238688),
                             shape: RoundedRectangleBorder(
@@ -229,14 +241,13 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.02),
-
                       Center(
                         child: GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => LoginPage()),
+                                  builder: (context) => const LoginPage()),
                             );
                           },
                           child: Text.rich(
@@ -266,7 +277,6 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
           ),
-
           Container(
             color: const Color(0xFF238688),
             padding: const EdgeInsets.all(12),
@@ -283,5 +293,30 @@ class _SignupPageState extends State<SignupPage> {
         ],
       ),
     );
+  }
+
+  void _register() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        bool isRegistered = await _apiService!.userRegister(
+          _usernameController.text,
+          _nameController.text,
+          _emailController.text,
+          _passwordController.text,
+        );
+        if (isRegistered) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage()),
+          );
+        } else {
+          throw Exception('Username already exists. Please try again.');
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
   }
 }

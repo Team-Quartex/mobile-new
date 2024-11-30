@@ -1,44 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:trova/Screens/Marketplace/product_view.dart';
+import 'package:trova/class/image_location.dart';
+import 'package:trova/class/product_class.dart';
 
-class MarketPage extends StatelessWidget {
-<<<<<<< HEAD
-  final String apiUrl = 'https://172.20.10.4:8000/api/products';
-=======
-  final String apiUrl = 'https://example.com/api/items';
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
+class MarketPage extends StatefulWidget {
+  @override
+  _MarketPageState createState() => _MarketPageState();
+}
 
-  Future<List<Item>> fetchItems() async {
-    final response = await http.get(Uri.parse(apiUrl));
+class _MarketPageState extends State<MarketPage> {
+  final ProductClass _productClass = ProductClass();
+  final TextEditingController _searchController = TextEditingController();
 
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((item) => Item.fromJson(item)).toList();
-    } else {
-      throw Exception('Failed to load items');
+  List<Map<String, dynamic>> _products = [];
+  List<Map<String, dynamic>> _filteredProducts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+    _searchController.addListener(_filterProducts);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      final products = await _productClass.getProducts();
+      setState(() {
+        _products = products;
+        _filteredProducts = products;
+      });
+    } catch (e) {
+      // Handle errors appropriately
+      print('Error loading products: $e');
     }
+  }
+
+  void _filterProducts() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredProducts = _products
+          .where((product) =>
+              product['name'].toLowerCase().contains(query) ||
+              product['description'].toLowerCase().contains(query))
+          .toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Market place', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
+        title: const Text('Market place',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
         centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        toolbarHeight: 80,
-        // leading: IconButton(
-        //   //icon: Icon(Icons.store_mall_directory_sharp, color: Colors.black,size: 35,),
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //   },
-        // ),
+        iconTheme: const IconThemeData(color: Colors.black),
+        toolbarHeight: 85,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(9.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -53,16 +81,18 @@ class MarketPage extends StatelessWidget {
                       color: Colors.black.withOpacity(0.2),
                       blurRadius: 12,
                       spreadRadius: 2,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: TextField(
+                  controller: _searchController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search, color: Colors.black),
+                    prefixIcon: const Icon(Icons.search, color: Colors.black),
                     hintText: 'Search here...',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide.none,
@@ -78,72 +108,28 @@ class MarketPage extends StatelessWidget {
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                 ),
               ),
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-<<<<<<< HEAD
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                  CategoryChip(imagePath: 'assets/icons/camera.png'),
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                  CategoryChip(imagePath: 'assets/icons/tent.png'),
-                ],
-              ),
-            ),
-
-
-=======
-                  CategoryChip(label: 'Tent', icon: Icons.outdoor_grill),
-                  CategoryChip(label: 'Camera', icon: Icons.camera_alt),
-                  CategoryChip(label: 'Binoculars', icon: Icons.visibility),
-                  CategoryChip(label: 'Shoes', icon: Icons.sports),
-                ],
-              ),
-            ),
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Expanded(
-              child: FutureBuilder<List<Item>>(
-                future: fetchItems(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No items available.'));
-                  }
-
-                  var items = snapshot.data!;
-
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16.0,
-                      mainAxisSpacing: 16.0,
+              child: _filteredProducts.isEmpty
+                  ? const Center(child: Text('No items match your search.'))
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
+                        childAspectRatio: (1 / 1.62),
+                      ),
+                      itemCount: _filteredProducts.length,
+                      itemBuilder: (context, index) {
+                        var item = _filteredProducts[index];
+                        return ItemCard(product: item);
+                      },
                     ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      var item = items[index];
-                      return ItemCard(
-                        imageUrl: item.imageUrl,
-                        name: item.name,
-                        price: item.price,
-                        category: item.category,
-                      );
-                    },
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -152,154 +138,83 @@ class MarketPage extends StatelessWidget {
   }
 }
 
-<<<<<<< HEAD
-
-
-class CategoryChip extends StatelessWidget {
-  final String imagePath;
-
-  CategoryChip({required this.imagePath});
-=======
-class CategoryChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-
-  CategoryChip({required this.label, required this.icon});
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 12.0),
-<<<<<<< HEAD
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 2,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Image.asset(
-            imagePath,
-            width: 50,
-            height: 50,
-            fit: BoxFit.contain,
-          ),
-        ),
-=======
-      child: Chip(
-        label: Row(
-          children: [
-            Icon(icon, size: 20),
-            SizedBox(width: 8),
-            Text(label, style: TextStyle(fontSize: 14)),
-          ],
-        ),
-        backgroundColor: Colors.grey[200],
-        padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0), // Increased height
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
-      ),
-    );
-  }
-}
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
 class ItemCard extends StatelessWidget {
-  final String imageUrl;
-  final String name;
-  final double price;
-  final String category;
+  final Map<String, dynamic> product;
 
-  ItemCard({
-    required this.imageUrl,
-    required this.name,
-    required this.price,
-    required this.category,
+  const ItemCard({
+    super.key,
+    required this.product,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(8),
-            ),
-            child: Image.network(imageUrl, height: 120, fit: BoxFit.cover),
-          ),
-<<<<<<< HEAD
-=======
-          // Item Details
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 4.0),
-                Text('LKR ${price.toStringAsFixed(2)}', style: TextStyle(fontSize: 14)),
-                SizedBox(height: 4.0),
-                Text(category, style: TextStyle(fontSize: 12, color: Colors.grey)),
-              ],
-            ),
-          ),
-          // Rent Button
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductView(itemDetails: product)));
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        elevation: 4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
               ),
-              child: Text('For Rent', style: TextStyle(fontSize: 14)),
+              child: Image.network(
+                ImageLocation().imageUrl(product['images'][0]),
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product['name'],
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4.0),
+                  // Star rating added here
+                  RatingStars(
+                    value: product['avgReviewRate'] != null
+                        ? double.parse(product['avgReviewRate'].toString())
+                        : 2.5, // Default rating
+                    valueLabelVisibility: false,
+                    starColor: const Color.fromARGB(255, 250, 166, 18),
+                    starOffColor: const Color.fromARGB(176, 0, 0, 0),
+                    starSize: 15, // Adjust star size as needed
+                  ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    product['description'],
+                    style: const TextStyle(fontSize: 12),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 3.0),
+                  Text(
+                    'LKR ${product['price'].toString()}',
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class Item {
-  final String imageUrl;
-  final String name;
-  final double price;
-  final String category;
-
-  Item({
-    required this.imageUrl,
-    required this.name,
-    required this.price,
-    required this.category,
-  });
-
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
-      imageUrl: json['imageUrl'],
-      name: json['name'],
-      price: json['price'],
-      category: json['category'],
-    );
-  }
-}

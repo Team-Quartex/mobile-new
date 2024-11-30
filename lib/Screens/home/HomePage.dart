@@ -6,6 +6,8 @@ import '../Profile/Profilepage.dart';
 import '../Search/Searchpage.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -15,14 +17,10 @@ class _HomePageState extends State<HomePage> {
   double? _deviceWidth, _deviceHeight;
 
   final List<Widget> _pages = [
-    HomeContent(),
-<<<<<<< HEAD
-    SearchPage(),
-=======
-    Searchpage(),
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
+    const HomeContent(),
+    const SearchPage(),
     MarketPage(),
-    Profilepage()
+    const ProfilePage()
   ];
 
   @override
@@ -36,7 +34,7 @@ class _HomePageState extends State<HomePage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              margin: EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 20),
               child: _bottomContainer(),
             ),
           ),
@@ -46,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _bottomContainer() {
-    return Container(
+    return SizedBox(
       width: _deviceWidth! * 0.9,
       height: _deviceHeight! * 0.07,
       child: Row(
@@ -64,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black.withOpacity(0.3),
                   spreadRadius: 5,
                   blurRadius: 10,
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -80,17 +78,17 @@ class _HomePageState extends State<HomePage> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Addpost()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AddPost()));
             },
             child: Container(
               width: _deviceHeight! * 0.07,
               height: _deviceHeight! * 0.07,
               decoration: BoxDecoration(
-                color: Color.fromRGBO(35, 134, 136, 1),
+                color: const Color.fromRGBO(35, 134, 136, 1),
                 borderRadius: BorderRadius.circular(100),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.add,
                 color: Colors.white,
                 size: 35,

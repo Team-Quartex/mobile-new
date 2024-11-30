@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:trova/model/post_model.dart';
-=======
-import '../../../model/post_model.dart';
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
-import 'Comment.dart';
+import 'package:get_it/get_it.dart';
+import 'package:trova/Screens/home/HomeContent/NotificationPage.dart';
+import 'package:trova/api_service.dart';
+import 'package:trova/class/image_location.dart';
+import 'package:trova/class/post_class.dart';
+import 'package:trova/class/user_class.dart';
+import 'package:trova/widget/post_card.dart';
+import 'package:trova/widget/post_description.dart';
 import 'Like.dart';
-import 'Cart.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
@@ -18,110 +17,119 @@ class HomeContent extends StatefulWidget {
 }
 
 class _LandingpageState extends State<HomeContent> {
-  Future<List<Post>> fetchPosts() async {
-<<<<<<< HEAD
-    try {
-      final response = await http.get(Uri.parse('http://localhost:8000/api/posts/getall'));
+  ApiService? _apiService;
+  int? userId;
+  String? profilePic;
 
-      if (response.statusCode == 200) {
-        final List<dynamic> postsJson = json.decode(response.body);
-        return postsJson.map((json) => Post.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to load posts: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-      throw Exception('Failed to load posts: $e');
-    }
-=======
-    await Future.delayed(Duration(seconds: 2));
-    return [
-      Post(
-        userName: 'John Doe',
-        userProfileImage: 'assets/profile.jpg',
-        postContent: 'Hi, Everyone! Today I\'m in the world\'s most beautiful island @SriLanka',
-        postImage: 'assets/pic1.jpg',
-        postDate: '1 day ago',
-        likes: 4200,
-        comments: 3500,
-      ),
-      Post(
-        userName: 'Jane Doe',
-        userProfileImage: 'assets/profile.jpg',
-        postContent: 'Exploring the amazing lighthouse in Sri Lanka! #SriLanka #travel',
-        postImage: 'assets/pic1.jpg',
-        postDate: '2 days ago',
-        likes: 2800,
-        comments: 1900,
-      ),
-    ];
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
+  @override
+  void initState() {
+    super.initState();
+    _apiService = GetIt.instance.get<ApiService>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 80,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/profile.jpg'),
-                  radius: 25,
-                ),
-                SizedBox(width: 10),
-                Text('Welcome', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              ],
-            ),
-            Text('John Doe', style: TextStyle(fontSize: 18, color: Colors.white)),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Cart()));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Cart()));
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder<List<Post>>(
-        future: fetchPosts(),
+    return FutureBuilder(
+        future: GetIt.instance.get<UserClass>().fetchUser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const CircularProgressIndicator();
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No posts available'));
+            return Text('Error: ${snapshot.error}');
           } else {
-            final posts = snapshot.data!;
-            return ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                return buildPostCard(posts[index]);
-              },
+            final userClass = GetIt.instance.get<UserClass>();
+            userId = userClass.userid;
+            profilePic = userClass.profilepic;
+            return Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 75,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: userClass.profilepic != null
+                              ? NetworkImage(ImageLocation().imageUrl(
+                              userClass.profilepic.toString()))
+                              : const AssetImage(
+                              'assets/default_profile_pic.png'),
+                          radius: 25,
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Welcome',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              userClass.name.toString(),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+
+
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const NotificationPage()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              body: FutureBuilder<List<Map<String, dynamic>>>(
+                future: PostClass().fetchPost(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No posts available'));
+                  } else {
+                    final posts = snapshot.data!;
+
+                    return ListView.builder(
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        final post = posts[index];
+                        return PostCard(
+                          post: post,
+                          userId: userId!,
+                          profilePic: profilePic!,
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
             );
           }
-        },
-      ),
-    );
+        });
   }
 
-  Widget buildPostCard(Post post) {
+  Widget _postCard(Map<dynamic, dynamic> post) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -129,8 +137,8 @@ class _LandingpageState extends State<HomeContent> {
       child: Column(
         children: [
           Card(
-            margin: EdgeInsets.all(8),
-            color: Color(0xFFE0EEEE),
+            margin: const EdgeInsets.all(8),
+            color: const Color(0xFFE0EEEE),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
@@ -142,95 +150,114 @@ class _LandingpageState extends State<HomeContent> {
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage(post.userProfileImage),
+                        backgroundImage: NetworkImage(
+                            ImageLocation().imageUrl(
+                                post['profilePic'].toString())),
                         radius: 25,
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              Text(post.userName, style: TextStyle(fontWeight: FontWeight.bold)),
-                              SizedBox(width: 10),
+                              Text(post['name'],
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(width: 10),
                               TextButton(
-                                onPressed: () {
-                                },
+                                onPressed: () {},
                                 style: TextButton.styleFrom(
                                   backgroundColor: Colors.black,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 4),
                                 ),
-                                child: Text(
+                                child: const Text(
                                   'Follow',
-<<<<<<< HEAD
-                                  style: TextStyle(color: Colors.white),
-=======
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
                                 ),
                               ),
                             ],
                           ),
-                          Text(post.postDate, style: TextStyle(color: Colors.grey)),
+                          Text(post['postTime'],
+                              style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: () {
-                        },
+                        icon: const Icon(
+                          Icons.bookmark_border_rounded,
+                          size: 20,
+                        ),
+                        onPressed: () {},
                       ),
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(post.postContent),
+                  child: PostDescription(description: post['description']),
                 ),
-                Container(
+                post['images'].length == 0
+                    ? Container()
+                    : SizedBox(
                   height: 250,
                   child: PageView.builder(
-                    itemCount: 1,
+                    padEnds: false,
+                    itemCount: post['images'].length,
                     itemBuilder: (context, index) {
-                      return Image.asset(post.postImage, fit: BoxFit.cover);
+                      return Image.network(
+                        ImageLocation().imageUrl(
+                            post['images'][index].toString()),
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.error);
+                        },
+                      );
                     },
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.favorite, size: 20, color: Color(0xFFFF0000)),
+                        icon: Icon(Icons.favorite_border_outlined,
+                            size: 20,
+                            color: post['likeduser'].contains(userId.toString())
+                                ? const Color(0xFFFF0000)
+                                : const Color.fromARGB(255, 78, 78, 78)),
                         onPressed: () {
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => Like()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Like()));
                         },
                       ),
-                      SizedBox(width: 5),
-                      Text('${post.likes} Likes', style: TextStyle(color: Colors.grey)),
-                      Spacer(),
+                      const SizedBox(width: 5),
+                      Text('${post['likeduser']?.length ?? 0} Likes',
+                          style: const TextStyle(color: Colors.grey)),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.comment, size: 20, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => Comment()));
-                        },
+                        icon: const Icon(Icons.comment,
+                            size: 20, color: Colors.grey),
+                        onPressed: () {},
                       ),
-                      SizedBox(width: 5),
-                      Text('${post.comments} Comments', style: TextStyle(color: Colors.grey)),
-                      Spacer(),
+                      const SizedBox(width: 5),
+                      Text('${post['comments']} Comments',
+                          style: const TextStyle(color: Colors.grey)),
+                      const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.share, size: 20, color: Colors.grey),
-                        onPressed: () {
-                        },
+                        icon: const Icon(Icons.share,
+                            size: 20, color: Colors.grey),
+                        onPressed: () {},
                       ),
                     ],
                   ),
@@ -238,10 +265,9 @@ class _LandingpageState extends State<HomeContent> {
               ],
             ),
           ),
-<<<<<<< HEAD
-=======
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            padding:
+            const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -249,13 +275,12 @@ class _LandingpageState extends State<HomeContent> {
               ),
               child: Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 20,
                     backgroundImage: AssetImage('assets/profile.jpg'),
                   ),
-                  SizedBox(width: 10),
-
-                  Expanded(
+                  const SizedBox(width: 10),
+                  const Expanded(
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Type a comment...',
@@ -266,26 +291,22 @@ class _LandingpageState extends State<HomeContent> {
                       ),
                     ),
                   ),
-
-
                   Container(
-                    padding: EdgeInsets.all(1),
+                    padding: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.send, color: Colors.white, size: 18),
-                      onPressed: () {
-
-                      },
+                      icon:
+                      const Icon(Icons.send, color: Colors.white, size: 18),
+                      onPressed: () {},
                     ),
                   ),
                 ],
               ),
             ),
           ),
->>>>>>> 93870a743b9b957b848a57c75b0591490b961af4
         ],
       ),
     );
